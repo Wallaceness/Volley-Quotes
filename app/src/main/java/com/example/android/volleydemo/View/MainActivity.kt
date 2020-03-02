@@ -22,4 +22,5 @@ class MainActivity : AppCompatActivity(), MainFragment.OnFragmentInteractionList
     override fun onFragmentInteraction(uri: Uri) {
 
     }
+
 }

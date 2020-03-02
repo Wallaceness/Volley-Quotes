@@ -9,6 +9,7 @@
             type="org.json.JSONObject" />
     </data>
 
+
     <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -17,7 +18,7 @@
         android:id="@+id/quoteBody"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@{@string/double_quote+quote.optString(`message`, ``)+@string/double_quote}"
+        android:text="@{String.format(@string/quotation ,quote.optString(`message`, ``))}"
         android:textStyle="bold"
         android:textSize="12pt"
         app:layout_constraintTop_toTopOf="parent"/>
