@@ -14,6 +14,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import com.example.android.volleydemo.ViewModel.QuoteViewModel
 import com.example.android.volleydemo.databinding.FragmentMainBinding
+import com.google.android.material.tabs.TabLayout
 import org.json.JSONObject
 
 /**
@@ -27,6 +28,9 @@ class MainFragment : Fragment() {
     private var dataBinder: FragmentMainBinding? = null
     var quoteVM: QuoteViewModel?=null
     var quote: LiveData<JSONObject>?=null
+    lateinit var tabs:TabLayout
+    var currentTab:String = "random"
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,14 +39,47 @@ class MainFragment : Fragment() {
         // Inflate the layout for this fragment
         QuoteViewModel.VolleyQueue.init(requireActivity()!!.applicationContext)
         dataBinder = DataBindingUtil.inflate(inflater, R.layout.fragment_main, container, false)
+        val rootView = dataBinder?.root
         quoteVM = QuoteViewModel(requireActivity().application)
+        tabs = rootView!!.findViewById(R.id.tabLayout)
+        val manager = childFragmentManager
+        manager.beginTransaction().add(R.id.controlPanel, RandomFragment()).commit()
 
+        tabs.addOnTabSelectedListener(object: TabLayout.BaseOnTabSelectedListener<TabLayout.Tab>{
+            override fun onTabReselected(p0: TabLayout.Tab?) {
+                println("Tab reselected")
+            }
+
+            override fun onTabUnselected(p0: TabLayout.Tab?) {
+                println("Tab unselected")
+            }
+
+            override fun onTabSelected(p0: TabLayout.Tab?) {
+                manager.beginTransaction().replace(R.id.controlPanel, when(p0?.text){
+                    "Random"-> {
+                        currentTab = "random"
+                        RandomFragment()
+                    }
+                    "By Keyword" ->{
+                        currentTab = "keyword"
+                        SearchFragment()
+                    }
+                    "By Author" ->{
+                        currentTab = "author"
+                        SearchFragment()
+                    }
+                    else -> Fragment()
+                }).commit()
+
+            }
+
+        })
         quoteVM?.getQuote()?.observe(viewLifecycleOwner, Observer<JSONObject> {response->
             dataBinder?.quote = response
         })
 
         quoteVM!!.fetchRandom()
-        return dataBinder?.root
+        return rootView
     }
 
 

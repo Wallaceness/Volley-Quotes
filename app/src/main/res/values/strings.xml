@@ -3,5 +3,10 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="quotation">“%1$s”</string>
+    <string name="author">-%1$s, %2$s - %3$s</string>
+    <string name="search">Search</string>
+    <string name="get_random_quote">Get Random Quote</string>
+    <string name="random_tab">Random</string>
+    <string name="by_keyword">By Keyword</string>
+    <string name="by_author">By Author</string>
 </resources>
