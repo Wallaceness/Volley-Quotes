@@ -6,20 +6,21 @@ import androidx.annotation.NonNull
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import com.android.volley.Request
 import com.android.volley.RequestQueue
 import com.android.volley.Response
 import com.android.volley.VolleyError
 import com.android.volley.toolbox.JsonObjectRequest
-import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
+import com.example.android.volleydemo.Quote
+import com.example.android.volleydemo.SavedQuotesDB
 import com.example.android.volleydemo.Secrets
 import org.json.JSONObject
 
 class QuoteViewModel(@NonNull application: Application) : AndroidViewModel(Application()) {
     private val quote : MutableLiveData<JSONObject> = MutableLiveData()
     private val error: MutableLiveData<VolleyError> = MutableLiveData()
+    lateinit var savedQuotesDb: SavedQuotesDB
 
     companion object VolleyQueue {
         var requestQueue: RequestQueue? = null
@@ -28,6 +29,10 @@ class QuoteViewModel(@NonNull application: Application) : AndroidViewModel(Appli
         ) {
             requestQueue = Volley.newRequestQueue(context)
         }
+    }
+
+    init{
+        savedQuotesDb = SavedQuotesDB.getDB(application.applicationContext)!!
     }
 
     val base = "https://150000-quotes.p.rapidapi.com/"
@@ -83,5 +88,13 @@ class QuoteViewModel(@NonNull application: Application) : AndroidViewModel(Appli
 
     fun getError(): LiveData<VolleyError>{
         return error
+    }
+
+    fun getSavedQuotes(): List<Quote>{
+        return savedQuotesDb.quoteDao()!!.getAllQuotes()
+    }
+
+    fun saveQuote(quote: Quote){
+        SavedQuotesDB.databaseWriteExecutor.execute({ savedQuotesDb.quoteDao()?.insert(quote) })
     }
 }

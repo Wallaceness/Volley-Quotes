@@ -7,10 +7,9 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-import androidx.databinding.BindingAdapter
+import android.widget.Button
+import android.widget.ImageButton
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import com.example.android.volleydemo.ViewModel.QuoteViewModel
 import com.example.android.volleydemo.databinding.FragmentMainBinding
@@ -27,9 +26,10 @@ class MainFragment : Fragment() {
     private var listener: OnFragmentInteractionListener? = null
     private var dataBinder: FragmentMainBinding? = null
     var quoteVM: QuoteViewModel?=null
-    var quote: LiveData<JSONObject>?=null
+    var quote: Quote?=null
     lateinit var tabs:TabLayout
     var currentTab:String = "random"
+    lateinit var saveButton:ImageButton
 
 
     override fun onCreateView(
@@ -44,6 +44,12 @@ class MainFragment : Fragment() {
         tabs = rootView!!.findViewById(R.id.tabLayout)
         val manager = childFragmentManager
         manager.beginTransaction().add(R.id.controlPanel, RandomFragment()).commit()
+        saveButton = rootView.findViewById(R.id.saveBtn)
+
+        saveButton.setOnClickListener {
+            quoteVM?.saveQuote(this.quote!!)
+        }
+
 
         tabs.addOnTabSelectedListener(object: TabLayout.BaseOnTabSelectedListener<TabLayout.Tab>{
             override fun onTabReselected(p0: TabLayout.Tab?) {
@@ -75,7 +81,17 @@ class MainFragment : Fragment() {
 
         })
         quoteVM?.getQuote()?.observe(viewLifecycleOwner, Observer<JSONObject> {response->
-            dataBinder?.quote = response
+            val quote = Quote(
+                response.optString("message", ""),
+                response.optString("author", ""),
+                response.optString("keywords", ""),
+                response.optString("profession", ""),
+                response.optString("nationality", ""),
+                response.optString("authorBirth", ""),
+                response.optString("authorDeath", "")
+            )
+            this.quote=quote
+            dataBinder?.quote = quote
         })
 
         quoteVM!!.fetchRandom()

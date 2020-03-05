@@ -6,7 +6,7 @@
     <data>
         <variable
             name="quote"
-            type="org.json.JSONObject" />
+            type="com.example.android.volleydemo.Quote" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -57,7 +57,7 @@
         android:id="@+id/quoteBody"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="@{`“`+quote.optString(`message`, ``)+`”`}"
+        android:text="@{quote!=null?`“`+quote.message+`”`:``}"
         android:textStyle="italic"
         android:textSize="12pt"
         app:layout_constraintTop_toBottomOf="@id/controlPanel"
@@ -72,7 +72,7 @@
             app:layout_constraintTop_toBottomOf="@+id/quoteBody"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:text="@{String.format(@string/author, quote.optString(`author`, ``), quote.optString(`authorBirth`, ``).split(`-`)[2], quote.optString(`authorDeath`, ``).split(`-`)[2])}"
+            android:text="@{quote!=null?String.format(@string/author, quote.author, quote.authorBirth.split(`-`)[2], quote.authorDeath.split(`-`)[2]):``}"
             android:textStyle="bold"
             android:textSize="12pt"
             android:layout_marginTop="10dp"
