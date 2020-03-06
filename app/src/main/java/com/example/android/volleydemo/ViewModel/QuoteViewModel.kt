@@ -21,6 +21,8 @@ class QuoteViewModel(@NonNull application: Application) : AndroidViewModel(Appli
     private val quote : MutableLiveData<JSONObject> = MutableLiveData()
     private val error: MutableLiveData<VolleyError> = MutableLiveData()
     lateinit var savedQuotesDb: SavedQuotesDB
+    private lateinit var savedQuotes: LiveData<List<Quote>>
+
 
     companion object VolleyQueue {
         var requestQueue: RequestQueue? = null
@@ -33,6 +35,7 @@ class QuoteViewModel(@NonNull application: Application) : AndroidViewModel(Appli
 
     init{
         savedQuotesDb = SavedQuotesDB.getDB(application.applicationContext)!!
+        savedQuotes = savedQuotesDb.quoteDao().getAllQuotes()
     }
 
     val base = "https://150000-quotes.p.rapidapi.com/"
@@ -90,8 +93,8 @@ class QuoteViewModel(@NonNull application: Application) : AndroidViewModel(Appli
         return error
     }
 
-    fun getSavedQuotes(): List<Quote>{
-        return savedQuotesDb.quoteDao()!!.getAllQuotes()
+    fun getSavedQuotes(): LiveData<List<Quote>>{
+        return savedQuotes
     }
 
     fun saveQuote(quote: Quote){

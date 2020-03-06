@@ -11,6 +11,7 @@ import android.widget.Button
 import android.widget.ImageButton
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
+import com.example.android.volleydemo.View.MainActivity
 import com.example.android.volleydemo.ViewModel.QuoteViewModel
 import com.example.android.volleydemo.databinding.FragmentMainBinding
 import com.google.android.material.tabs.TabLayout
@@ -50,6 +51,10 @@ class MainFragment : Fragment() {
             quoteVM?.saveQuote(this.quote!!)
         }
 
+        val navButton:Button =rootView.findViewById(R.id.navBtn)
+        navButton.setOnClickListener { v->
+            (activity as MainActivity).navigateTo(R.id.savedQuotesFragment)
+        }
 
         tabs.addOnTabSelectedListener(object: TabLayout.BaseOnTabSelectedListener<TabLayout.Tab>{
             override fun onTabReselected(p0: TabLayout.Tab?) {

@@ -1,5 +1,6 @@
 package com.example.android.volleydemo.ViewModel
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
@@ -11,6 +12,6 @@ interface QuotesDao {
     fun insert(quote: Quote?)
 
     @Query("Select * from quotes_table")
-    fun getAllQuotes() : List<Quote>
+    fun getAllQuotes() : LiveData<List<Quote>>
 
 }
