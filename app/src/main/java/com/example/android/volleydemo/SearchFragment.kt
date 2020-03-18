@@ -24,12 +24,14 @@ class SearchFragment : Fragment() {
         val mvm = (parentFragment as MainFragment).quoteVM
 
         searchBtn.setOnClickListener { v: View ->
+            val searchValue = textarea.text.toString()
             val type = (parentFragment as MainFragment).currentTab
             if (type == "author") {
-                mvm?.fetchByAuthor(textarea.text.toString())
+                mvm?.fetchByAuthor(searchValue)
             } else if (type == "keyword") {
-                mvm?.fetchByKeyword(textarea.text.toString())
+                mvm?.fetchByKeyword(searchValue)
             }
+            (parentFragment as MainFragment).searchValue = searchValue
         }
         return rootView
     }

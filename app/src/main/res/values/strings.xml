@@ -9,4 +9,6 @@
     <string name="random_tab">Random</string>
     <string name="by_keyword">By Keyword</string>
     <string name="by_author">By Author</string>
+    <string name="saved_quotes">Saved Quotes</string>
+    <string name="toggle">Toggle</string>
 </resources>

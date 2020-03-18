@@ -13,9 +13,9 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import com.example.android.volleydemo.View.MainActivity
 import com.example.android.volleydemo.ViewModel.QuoteViewModel
-import com.example.android.volleydemo.databinding.FragmentMainBinding
 import com.google.android.material.tabs.TabLayout
 import org.json.JSONObject
+import java.util.zip.Inflater
 
 /**
  * A simple [Fragment] subclass.
@@ -25,12 +25,15 @@ import org.json.JSONObject
  */
 class MainFragment : Fragment() {
     private var listener: OnFragmentInteractionListener? = null
-    private var dataBinder: FragmentMainBinding? = null
     var quoteVM: QuoteViewModel?=null
     var quote: Quote?=null
     lateinit var tabs:TabLayout
     var currentTab:String = "random"
-    lateinit var saveButton:ImageButton
+    lateinit var singleQuoteFragment:SingleQuoteFragment;
+    lateinit var multiQuoteFragment:FetchedQuotesFragment;
+    lateinit var toggleButton: Button
+    var viewType = "single"
+    lateinit var searchValue:String
 
 
     override fun onCreateView(
@@ -39,21 +42,31 @@ class MainFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         QuoteViewModel.VolleyQueue.init(requireActivity()!!.applicationContext)
-        dataBinder = DataBindingUtil.inflate(inflater, R.layout.fragment_main, container, false)
-        val rootView = dataBinder?.root
+        val rootView:View = inflater.inflate(R.layout.fragment_main, container, false)
         quoteVM = QuoteViewModel(requireActivity().application)
         tabs = rootView!!.findViewById(R.id.tabLayout)
         val manager = childFragmentManager
         manager.beginTransaction().add(R.id.controlPanel, RandomFragment()).commit()
-        saveButton = rootView.findViewById(R.id.saveBtn)
-
-        saveButton.setOnClickListener {
-            quoteVM?.saveQuote(this.quote!!)
-        }
+        singleQuoteFragment = SingleQuoteFragment()
+        multiQuoteFragment = FetchedQuotesFragment(currentTab)
+        manager.beginTransaction().add(R.id.quoteBody, singleQuoteFragment).commit()
 
         val navButton:Button =rootView.findViewById(R.id.navBtn)
         navButton.setOnClickListener { v->
             (activity as MainActivity).navigateTo(R.id.savedQuotesFragment)
+        }
+
+        toggleButton = rootView.findViewById(R.id.toggleBtn)
+
+        toggleButton.setOnClickListener{
+            if (viewType =="single") {
+                manager.beginTransaction().replace(R.id.quoteBody, multiQuoteFragment).commit()
+                viewType="multi"
+            }
+            else if (viewType=="multi"){
+                manager.beginTransaction().replace(R.id.quoteBody, singleQuoteFragment).commit()
+                viewType="single"
+            }
         }
 
         tabs.addOnTabSelectedListener(object: TabLayout.BaseOnTabSelectedListener<TabLayout.Tab>{
@@ -69,14 +82,17 @@ class MainFragment : Fragment() {
                 manager.beginTransaction().replace(R.id.controlPanel, when(p0?.text){
                     "Random"-> {
                         currentTab = "random"
+                        multiQuoteFragment.resetType("random")
                         RandomFragment()
                     }
                     "By Keyword" ->{
                         currentTab = "keyword"
+                        multiQuoteFragment.resetType("keyword")
                         SearchFragment()
                     }
                     "By Author" ->{
                         currentTab = "author"
+                        multiQuoteFragment.resetType("author")
                         SearchFragment()
                     }
                     else -> Fragment()
@@ -95,8 +111,7 @@ class MainFragment : Fragment() {
                 response.optString("authorBirth", ""),
                 response.optString("authorDeath", "")
             )
-            this.quote=quote
-            dataBinder?.quote = quote
+            singleQuoteFragment.setBinding(quote)
         })
 
         quoteVM!!.fetchRandom()
@@ -118,17 +133,6 @@ class MainFragment : Fragment() {
         listener = null
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     *
-     *
-     * See the Android Training lesson [Communicating with Other Fragments]
-     * (http://developer.android.com/training/basics/fragments/communicating.html)
-     * for more information.
-     */
     interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         fun onFragmentInteraction(uri: Uri)
