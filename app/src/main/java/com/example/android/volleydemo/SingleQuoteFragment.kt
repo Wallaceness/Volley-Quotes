@@ -32,7 +32,7 @@ class SingleQuoteFragment : Fragment() {
         return rootView
     }
 
-    fun setBinding(quote:Quote){
+    fun setBinding(quote:Quote?){
         databinder?.quote = quote
     }
 

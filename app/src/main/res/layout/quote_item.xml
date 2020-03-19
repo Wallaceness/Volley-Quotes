@@ -7,6 +7,7 @@
         <variable
             name="quote"
             type="com.example.android.volleydemo.Quote" />
+        <import type="android.view.View" />
     </data>
 <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
@@ -15,6 +16,14 @@
     android:layout_margin="10dp"
     android:padding="5dp"
     android:background="@color/cardview_light_background">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="@{quote==null?View.VISIBLE:View.GONE}"
+        android:id="@+id/placeholderMessage"
+        android:textSize="12pt"
+        android:gravity="center"
+        android:text="Find a Quote by Searching Above." />
 
     <ImageButton
         android:id="@+id/saveBtn"
@@ -22,7 +31,8 @@
         android:layout_height="wrap_content"
         android:background="@drawable/ic_star_yellow_40dp"
         app:layout_constraintTop_toTopOf="@id/quoteBody"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent"
+        android:visibility="@{quote!=null?View.VISIBLE:View.GONE}"/>
     <TextView
         android:id="@+id/quoteBody"
         android:layout_width="0dp"
@@ -41,7 +51,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@+id/quoteBody"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:text="@{quote!=null?String.format(@string/author, quote.author, quote.authorBirth.split(`-`)[2], quote.authorDeath.split(`-`)[2]):``}"
+        android:text="@{quote!=null?quote.formatAuthorLife():``}"
         android:textStyle="bold"
         android:textSize="12pt"
         android:layout_marginTop="5dp"

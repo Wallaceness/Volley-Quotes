@@ -13,4 +13,16 @@ class Quote(@PrimaryKey @field:ColumnInfo(name = "message") val message:String,
             @field:ColumnInfo(name="nationality") val nationality: String,
             @field:ColumnInfo(name="authorBirth") val authorBirth:String,
             @field:ColumnInfo(name="authorDeath") val authorDeath:String) {
+
+    fun formatAuthorLife():String{
+        var string= "-"+author
+        if (authorBirth != "null"){
+            string+=", "+authorBirth.split("-")[2]
+            if (authorDeath!="null"){
+                string+= " - ${authorDeath.split("-")[2]}"
+            }
+            else string+=" - Present"
+        }
+        return string
+    }
 }

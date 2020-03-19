@@ -18,6 +18,7 @@ import org.json.JSONObject
 class FetchedQuotesFragment constructor(type:String): Fragment() {
     lateinit var vm:QuoteViewModel
     var type=type
+    lateinit var parent:MainFragment
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -27,17 +28,17 @@ class FetchedQuotesFragment constructor(type:String): Fragment() {
         val rootView:View = inflater.inflate(R.layout.fragment_fetched_quote, container, false)
         val recycler:RecyclerView = rootView.findViewById(R.id.fetchedQuoteRecycler)
         val adapter= FetchedQuotesAdapter()
-        val parent = parentFragment as MainFragment
+        parent = parentFragment as MainFragment
         adapter.setOnBottomReachedListener(object: onBottomReachedListener{
             override fun onBottomReached(position: Int) {
                 if (type=="random"){
                     vm.fetchRandom()
                 }
-                else if (type=="author"){
-                    vm.fetchByAuthor(parent.searchValue)
+                else if (type=="author" && parent.searchValue!=null){
+                    vm.fetchByAuthor(parent.searchValue!!)
                 }
-                else if (type=="keyword"){
-                    vm.fetchByKeyword(parent.searchValue)
+                else if (type=="keyword" && parent.searchValue!=null){
+                    vm.fetchByKeyword(parent.searchValue!!)
                 }
             }
         })
@@ -56,20 +57,24 @@ class FetchedQuotesFragment constructor(type:String): Fragment() {
         })
         recycler.layoutManager = LinearLayoutManager(requireContext())
         recycler.adapter = adapter
-        if (type=="random"){
-            vm.fetchRandom()
-        }
-        else if (type=="author"){
-            vm.fetchByAuthor(parent.searchValue)
-        }
-        else if (type=="keyword"){
-            vm.fetchByKeyword(parent.searchValue)
-        }
+        startFetching()
         return rootView
     }
 
     fun resetType(type:String){
         this.type=type
+    }
+
+    fun startFetching(){
+        if (type=="random"){
+            vm.fetchRandom()
+        }
+        else if (type=="author" && parent.searchValue!=null){
+            vm.fetchByAuthor(parent.searchValue!!)
+        }
+        else if (type=="keyword" && parent.searchValue!=null){
+            vm.fetchByKeyword(parent.searchValue!!)
+        }
     }
 
 }

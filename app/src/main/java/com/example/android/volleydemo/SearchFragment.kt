@@ -31,7 +31,7 @@ class SearchFragment : Fragment() {
             } else if (type == "keyword") {
                 mvm?.fetchByKeyword(searchValue)
             }
-            (parentFragment as MainFragment).searchValue = searchValue
+            (parentFragment as MainFragment).newSearchValue(searchValue)
         }
         return rootView
     }

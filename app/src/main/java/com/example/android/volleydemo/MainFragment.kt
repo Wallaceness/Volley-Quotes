@@ -9,8 +9,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageButton
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
+import com.android.volley.VolleyError
 import com.example.android.volleydemo.View.MainActivity
 import com.example.android.volleydemo.ViewModel.QuoteViewModel
 import com.google.android.material.tabs.TabLayout
@@ -33,7 +35,7 @@ class MainFragment : Fragment() {
     lateinit var multiQuoteFragment:FetchedQuotesFragment;
     lateinit var toggleButton: Button
     var viewType = "single"
-    lateinit var searchValue:String
+    var searchValue:String?=null
 
 
     override fun onCreateView(
@@ -97,6 +99,14 @@ class MainFragment : Fragment() {
                     }
                     else -> Fragment()
                 }).commit()
+                if (viewType == "single"){
+                    singleQuoteFragment.setBinding(null)
+                }
+                else if (viewType == "multi"){
+                    multiQuoteFragment = FetchedQuotesFragment(currentTab)
+                    manager.beginTransaction().replace(R.id.quoteBody, multiQuoteFragment).commit()
+                }
+                searchValue = null
 
             }
 
@@ -113,9 +123,19 @@ class MainFragment : Fragment() {
             )
             singleQuoteFragment.setBinding(quote)
         })
+        quoteVM?.getError()?.observe(viewLifecycleOwner, Observer<VolleyError> { e ->
+            Toast.makeText(requireContext(), e.toString(), Toast.LENGTH_LONG).show()
+        })
 
         quoteVM!!.fetchRandom()
         return rootView
+    }
+
+    fun newSearchValue(term:String){
+        searchValue = term
+        if (viewType == "multi"){
+            multiQuoteFragment.startFetching()
+        }
     }
 
 
