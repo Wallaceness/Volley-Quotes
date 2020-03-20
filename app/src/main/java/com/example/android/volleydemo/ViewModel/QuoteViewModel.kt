@@ -98,6 +98,10 @@ class QuoteViewModel(@NonNull application: Application) : AndroidViewModel(Appli
     }
 
     fun saveQuote(quote: Quote){
-        SavedQuotesDB.databaseWriteExecutor.execute({ savedQuotesDb.quoteDao()?.insert(quote) })
+        SavedQuotesDB.databaseWriteExecutor.execute({ savedQuotesDb.quoteDao().insert(quote) })
+    }
+
+    fun deleteQuote(quote: Quote){
+        SavedQuotesDB.databaseWriteExecutor.execute({savedQuotesDb.quoteDao().delete(quote)})
     }
 }

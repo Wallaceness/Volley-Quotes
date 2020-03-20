@@ -1,11 +1,13 @@
 package com.example.android.volleydemo
 
 import android.app.Application
+import android.opengl.Visibility
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -19,6 +21,7 @@ class FetchedQuotesFragment constructor(type:String): Fragment() {
     lateinit var vm:QuoteViewModel
     var type=type
     lateinit var parent:MainFragment
+    lateinit var emptyView:TextView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -29,6 +32,7 @@ class FetchedQuotesFragment constructor(type:String): Fragment() {
         val recycler:RecyclerView = rootView.findViewById(R.id.fetchedQuoteRecycler)
         val adapter= FetchedQuotesAdapter()
         parent = parentFragment as MainFragment
+        emptyView = rootView.findViewById(R.id.view_empty)
         adapter.setOnBottomReachedListener(object: onBottomReachedListener{
             override fun onBottomReached(position: Int) {
                 if (type=="random"){
@@ -44,6 +48,7 @@ class FetchedQuotesFragment constructor(type:String): Fragment() {
         })
 
         vm.getQuote().observe(viewLifecycleOwner, Observer<JSONObject> { response ->
+            emptyView.visibility = View.GONE
             val quote = Quote(
                 response.optString("message", ""),
                 response.optString("author", ""),
@@ -53,6 +58,9 @@ class FetchedQuotesFragment constructor(type:String): Fragment() {
                 response.optString("authorBirth", ""),
                 response.optString("authorDeath", "")
             )
+            if (type=="author"){
+                parent.authorFragment.binding.quote = quote
+            }
             adapter.addQuote(quote)
         })
         recycler.layoutManager = LinearLayoutManager(requireContext())

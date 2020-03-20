@@ -17,7 +17,7 @@ import com.example.android.volleydemo.ViewModel.QuoteViewModel
  */
 class SavedQuotesFragment : Fragment() {
     var savedQuotes=arrayListOf<Quote>()
-
+    lateinit var qvm:QuoteViewModel;
         override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -25,8 +25,8 @@ class SavedQuotesFragment : Fragment() {
             // Inflate the layout for this fragment
             val rootView:View= inflater.inflate(R.layout.fragment_saved_quotes, container, false)
             val recycleView = rootView.findViewById<RecyclerView>(R.id.savedQuotesRecyclerview)
-            val qvm = QuoteViewModel(requireActivity().application)
-            val adapter= SavedQuotesAdapter(savedQuotes, requireContext())
+            qvm = QuoteViewModel(requireActivity().application)
+            val adapter= SavedQuotesAdapter(savedQuotes, qvm)
             val layoutManager = LinearLayoutManager(requireContext())
             recycleView.layoutManager = layoutManager
             recycleView.adapter = adapter

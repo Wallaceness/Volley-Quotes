@@ -11,4 +11,6 @@
     <string name="by_author">By Author</string>
     <string name="saved_quotes">Saved Quotes</string>
     <string name="toggle">Toggle</string>
+    <string name="enter_search_above_to_fetch_quotes">Enter Search Above to Fetch Quotes</string>
+    <string name="find_quote">Find a Quote by Searching Above.</string>
 </resources>

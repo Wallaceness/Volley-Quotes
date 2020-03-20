@@ -24,6 +24,7 @@ class SingleQuoteFragment : Fragment() {
         // Inflate the layout for this fragment
         databinder = DataBindingUtil.inflate(inflater,R.layout.quote_item, container, false)
         val rootView= databinder?.root
+        databinder?.saved = false
         saveButton = rootView!!.findViewById(R.id.saveBtn)
 
         saveButton.setOnClickListener {

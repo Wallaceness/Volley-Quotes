@@ -7,6 +7,8 @@
         <variable
             name="quote"
             type="com.example.android.volleydemo.Quote" />
+        <variable name="saved"
+            type="Boolean" />
         <import type="android.view.View" />
     </data>
 <androidx.constraintlayout.widget.ConstraintLayout
@@ -22,17 +24,16 @@
         android:visibility="@{quote==null?View.VISIBLE:View.GONE}"
         android:id="@+id/placeholderMessage"
         android:textSize="12pt"
-        android:gravity="center"
-        android:text="Find a Quote by Searching Above." />
+        android:text="@string/find_quote" />
 
     <ImageButton
         android:id="@+id/saveBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/ic_star_yellow_40dp"
+        android:background="@{saved?@drawable/ic_close_black_40dp:@drawable/ic_star_yellow_40dp}"
         app:layout_constraintTop_toTopOf="@id/quoteBody"
         app:layout_constraintStart_toStartOf="parent"
-        android:visibility="@{quote!=null?View.VISIBLE:View.GONE}"/>
+        android:visibility="@{quote!=null? View.VISIBLE:View.GONE}"/>
     <TextView
         android:id="@+id/quoteBody"
         android:layout_width="0dp"
@@ -41,8 +42,8 @@
         android:textStyle="italic"
         android:textSize="12pt"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/author"
         app:layout_constraintStart_toEndOf="@id/saveBtn"
+        app:layout_constraintBottom_toTopOf="@+id/author"
         app:layout_constraintEnd_toEndOf="parent"/>
 
     <TextView

@@ -4,12 +4,15 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.example.android.volleydemo.ViewModel.QuoteViewModel
 import com.example.android.volleydemo.databinding.QuoteItemBinding
 
-class SavedQuotesAdapter constructor(savedQuotes: ArrayList<Quote>, context:Context): RecyclerView.Adapter<SavedQuotesAdapter.SavedQuoteHolder> () {
+class SavedQuotesAdapter constructor(savedQuotes: ArrayList<Quote>, pvm: QuoteViewModel): RecyclerView.Adapter<SavedQuotesAdapter.SavedQuoteHolder> () {
     var savedQuotes: ArrayList<Quote>
+    val pVM:QuoteViewModel = pvm
 
     init{
         this.savedQuotes = savedQuotes
@@ -27,7 +30,7 @@ class SavedQuotesAdapter constructor(savedQuotes: ArrayList<Quote>, context:Cont
 
     override fun onBindViewHolder(holder: SavedQuoteHolder, position: Int) {
         val item:Quote = savedQuotes.get(position)
-        holder.bind(item)
+        holder.bind(item, pVM)
     }
 
     fun updateQuotes(quotes: ArrayList<Quote>){
@@ -38,14 +41,21 @@ class SavedQuotesAdapter constructor(savedQuotes: ArrayList<Quote>, context:Cont
     class SavedQuoteHolder(quoteBinding: QuoteItemBinding) : RecyclerView.ViewHolder(quoteBinding.root) {
         var quote:Quote?=null
         var binder:QuoteItemBinding
+        lateinit var deleteButton:ImageButton
 
          init{
              binder = quoteBinding
+             binder.saved = true
         }
 
-        fun bind(quote:Quote) {
+        fun bind(quote:Quote, pvm:QuoteViewModel) {
             binder.quote= quote
             binder.executePendingBindings()
+            deleteButton= binder.root.findViewById(R.id.saveBtn)
+
+            deleteButton.setOnClickListener(View.OnClickListener {
+                pvm.deleteQuote(quote)
+            })
         }
     }
 }
