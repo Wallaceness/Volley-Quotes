@@ -9,10 +9,11 @@ import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.android.volleydemo.ViewModel.QuoteViewModel
 import com.example.android.volleydemo.databinding.QuoteItemBinding
+import kotlin.jvm.internal.CallableReference
 
-class SavedQuotesAdapter constructor(savedQuotes: ArrayList<Quote>, pvm: QuoteViewModel): RecyclerView.Adapter<SavedQuotesAdapter.SavedQuoteHolder> () {
+class SavedQuotesAdapter constructor(savedQuotes: ArrayList<Quote>, context: SavedQuotesFragment): RecyclerView.Adapter<SavedQuotesAdapter.SavedQuoteHolder> () {
     var savedQuotes: ArrayList<Quote>
-    val pVM:QuoteViewModel = pvm
+    val parentContext=context
 
     init{
         this.savedQuotes = savedQuotes
@@ -30,7 +31,7 @@ class SavedQuotesAdapter constructor(savedQuotes: ArrayList<Quote>, pvm: QuoteVi
 
     override fun onBindViewHolder(holder: SavedQuoteHolder, position: Int) {
         val item:Quote = savedQuotes.get(position)
-        holder.bind(item, pVM)
+        holder.bind(item, parentContext)
     }
 
     fun updateQuotes(quotes: ArrayList<Quote>){
@@ -48,13 +49,13 @@ class SavedQuotesAdapter constructor(savedQuotes: ArrayList<Quote>, pvm: QuoteVi
              binder.saved = true
         }
 
-        fun bind(quote:Quote, pvm:QuoteViewModel) {
+        fun bind(quote:Quote, context:SavedQuotesFragment) {
             binder.quote= quote
             binder.executePendingBindings()
             deleteButton= binder.root.findViewById(R.id.saveBtn)
 
             deleteButton.setOnClickListener(View.OnClickListener {
-                pvm.deleteQuote(quote)
+                context.launchDialog(quote)
             })
         }
     }

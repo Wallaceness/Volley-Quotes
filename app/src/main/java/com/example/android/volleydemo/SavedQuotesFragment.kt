@@ -1,5 +1,7 @@
 package com.example.android.volleydemo
 
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -11,6 +13,7 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.android.volleydemo.ViewModel.QuoteViewModel
+import kotlin.jvm.internal.CallableReference
 
 /**
  * A simple [Fragment] subclass.
@@ -18,6 +21,8 @@ import com.example.android.volleydemo.ViewModel.QuoteViewModel
 class SavedQuotesFragment : Fragment() {
     var savedQuotes=arrayListOf<Quote>()
     lateinit var qvm:QuoteViewModel;
+    lateinit var deleteDialog:DeleteAlert
+    lateinit var selectedQuote:Quote
         override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -26,7 +31,7 @@ class SavedQuotesFragment : Fragment() {
             val rootView:View= inflater.inflate(R.layout.fragment_saved_quotes, container, false)
             val recycleView = rootView.findViewById<RecyclerView>(R.id.savedQuotesRecyclerview)
             qvm = QuoteViewModel(requireActivity().application)
-            val adapter= SavedQuotesAdapter(savedQuotes, qvm)
+            val adapter= SavedQuotesAdapter(savedQuotes, this)
             val layoutManager = LinearLayoutManager(requireContext())
             recycleView.layoutManager = layoutManager
             recycleView.adapter = adapter
@@ -35,6 +40,16 @@ class SavedQuotesFragment : Fragment() {
                 adapter.updateQuotes(savedQuotes)
             })
             return rootView
+    }
+
+    fun deleteQuote(){
+        qvm.deleteQuote(selectedQuote)
+    }
+
+    fun launchDialog(quote: Quote){
+        selectedQuote = quote
+        deleteDialog = DeleteAlert(this)
+        deleteDialog.show(childFragmentManager, "DeleteAlertDialog")
     }
 
 }
