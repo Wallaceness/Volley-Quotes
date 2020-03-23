@@ -2,6 +2,7 @@ package com.example.android.volleydemo
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.view.animation.AlphaAnimation
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.android.volleydemo.databinding.QuoteItemBinding
@@ -14,13 +15,19 @@ class FetchedQuotesAdapter: RecyclerView.Adapter<FetchedQuotesAdapter.FetchedQuo
     class FetchedQuotesHolder constructor(quoteBinding: QuoteItemBinding): RecyclerView.ViewHolder(quoteBinding.root) {
         var quote:Quote?=null
         var binder:QuoteItemBinding
-
+        var faded = false
         init{
             binder = quoteBinding
         }
 
         fun bind(quote:Quote) {
+            val fadeIn = AlphaAnimation(0f, 1f)
+            fadeIn.duration = 1000
             binder.quote= quote
+            if (!faded) {
+                binder.root.startAnimation(fadeIn)
+                faded = true
+            }
             binder.executePendingBindings()
         }
     }

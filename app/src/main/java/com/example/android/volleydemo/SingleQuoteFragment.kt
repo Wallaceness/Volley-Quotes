@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AlphaAnimation
 import android.widget.ImageButton
 import androidx.databinding.DataBindingUtil
 import com.example.android.volleydemo.databinding.QuoteItemBinding
@@ -34,7 +35,20 @@ class SingleQuoteFragment : Fragment() {
     }
 
     fun setBinding(quote:Quote?){
+        //animation for fading out and fading in
+        val fadeOut = AlphaAnimation(1f, 0f)
+        fadeOut.duration = 1000
+        val fadeIn = AlphaAnimation(0f, 1f)
+        fadeIn.duration = 1000
+        fadeIn.startOffset = 1000
+        if (quote!=null){
+            databinder?.root?.startAnimation(fadeOut)
+        }
+        if (quote!=null){
+            databinder?.root?.startAnimation(fadeIn)
+        }
         databinder?.quote = quote
+
     }
 
 }
