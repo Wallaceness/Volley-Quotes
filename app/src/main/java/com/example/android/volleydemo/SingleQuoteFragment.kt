@@ -35,20 +35,14 @@ class SingleQuoteFragment : Fragment() {
     }
 
     fun setBinding(quote:Quote?){
-        //animation for fading out and fading in
-        val fadeOut = AlphaAnimation(1f, 0f)
-        fadeOut.duration = 1000
+        //animation for fading in
         val fadeIn = AlphaAnimation(0f, 1f)
         fadeIn.duration = 1000
-        fadeIn.startOffset = 1000
-        if (quote!=null){
-            databinder?.root?.startAnimation(fadeOut)
-        }
+        databinder?.quote = quote
         if (quote!=null){
             databinder?.root?.startAnimation(fadeIn)
         }
-        databinder?.quote = quote
-
+        databinder?.root?.alpha = 1f
     }
 
 }

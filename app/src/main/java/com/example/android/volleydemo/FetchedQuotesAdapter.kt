@@ -15,7 +15,6 @@ class FetchedQuotesAdapter: RecyclerView.Adapter<FetchedQuotesAdapter.FetchedQuo
     class FetchedQuotesHolder constructor(quoteBinding: QuoteItemBinding): RecyclerView.ViewHolder(quoteBinding.root) {
         var quote:Quote?=null
         var binder:QuoteItemBinding
-        var faded = false
         init{
             binder = quoteBinding
         }
@@ -24,10 +23,7 @@ class FetchedQuotesAdapter: RecyclerView.Adapter<FetchedQuotesAdapter.FetchedQuo
             val fadeIn = AlphaAnimation(0f, 1f)
             fadeIn.duration = 1000
             binder.quote= quote
-            if (!faded) {
-                binder.root.startAnimation(fadeIn)
-                faded = true
-            }
+            binder.root.startAnimation(fadeIn)
             binder.executePendingBindings()
         }
     }
@@ -48,7 +44,7 @@ class FetchedQuotesAdapter: RecyclerView.Adapter<FetchedQuotesAdapter.FetchedQuo
 
     fun addQuote(quote:Quote){
         fetchedQuotes.add(quote)
-        notifyDataSetChanged()
+        notifyItemInserted(fetchedQuotes.size-1)
     }
 
     override fun onBindViewHolder(holder: FetchedQuotesHolder, position: Int) {

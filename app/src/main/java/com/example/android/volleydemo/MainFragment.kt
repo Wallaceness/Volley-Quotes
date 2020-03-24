@@ -3,18 +3,19 @@ package com.example.android.volleydemo
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.android.volley.VolleyError
 import com.example.android.volleydemo.View.MainActivity
 import com.example.android.volleydemo.ViewModel.QuoteViewModel
 import com.google.android.material.tabs.TabLayout
 import org.json.JSONObject
+
 
 /**
  * A simple [Fragment] subclass.
@@ -132,7 +133,8 @@ class MainFragment : Fragment() {
             singleQuoteFragment.setBinding(quote)
         })
         quoteVM?.getError()?.observe(viewLifecycleOwner, Observer<VolleyError> { e ->
-            Toast.makeText(requireContext(), e.toString(), Toast.LENGTH_LONG).show()
+            val responseBody = String(e.networkResponse.data)
+            Toast.makeText(requireContext(), responseBody, Toast.LENGTH_LONG).show()
         })
 
         quoteVM!!.fetchRandom()
