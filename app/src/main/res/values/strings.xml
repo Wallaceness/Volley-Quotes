@@ -18,4 +18,6 @@
     <string name="cancel">Cancel</string>
     <string name="app_settings">App Settings</string>
     <string name="find_quotes">Find Quotes</string>
+    <string name="multi">Multi</string>
+    <string name="single">Single</string>
 </resources>

@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".View.MainActivity">
-
     <fragment
         android:id="@+id/nav_host_fragment"
         android:name="androidx.navigation.fragment.NavHostFragment"
@@ -26,6 +25,7 @@
         android:background="@color/colorPrimary"
         app:itemIconTint="@color/colorPrimaryDark"
         app:itemTextColor="@color/floral_white"
-        app:menu="@menu/navigation_menu" />
+        app:menu="@menu/navigation_menu"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

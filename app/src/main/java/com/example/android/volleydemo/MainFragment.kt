@@ -3,15 +3,12 @@ package com.example.android.volleydemo
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.Button
+import android.view.*
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import com.android.volley.VolleyError
-import com.example.android.volleydemo.View.MainActivity
 import com.example.android.volleydemo.ViewModel.QuoteViewModel
 import com.google.android.material.tabs.TabLayout
 import org.json.JSONObject
@@ -29,12 +26,12 @@ class MainFragment : Fragment() {
     var quote: Quote?=null
     lateinit var tabs:TabLayout
     var currentTab:String = "random"
-    lateinit var singleQuoteFragment:SingleQuoteFragment;
-    lateinit var multiQuoteFragment:FetchedQuotesFragment;
-    lateinit var toggleButton: Button
+    lateinit var singleQuoteFragment:SingleQuoteFragment
+    lateinit var multiQuoteFragment:FetchedQuotesFragment
     lateinit var authorFragment:AuthorInfoFragment
     var viewType = "single"
     var searchValue:String?=null
+    lateinit var manager:FragmentManager
 
 
     override fun onCreateView(
@@ -42,29 +39,16 @@ class MainFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        QuoteViewModel.VolleyQueue.init(requireActivity()!!.applicationContext)
+        QuoteViewModel.VolleyQueue.init(requireActivity().applicationContext)
         val rootView:View = inflater.inflate(R.layout.fragment_main, container, false)
         quoteVM = QuoteViewModel(requireActivity().application)
-        tabs = rootView!!.findViewById(R.id.tabLayout)
-        val manager = childFragmentManager
+        tabs = rootView.findViewById(R.id.tabLayout)
+        manager = childFragmentManager
         manager.beginTransaction().add(R.id.controlPanel, RandomFragment()).commit()
         singleQuoteFragment = SingleQuoteFragment()
         multiQuoteFragment = FetchedQuotesFragment(currentTab)
         authorFragment = AuthorInfoFragment()
         manager.beginTransaction().replace(R.id.quoteBody, singleQuoteFragment).commit()
-
-        toggleButton = rootView.findViewById(R.id.toggleBtn)
-
-        toggleButton.setOnClickListener{
-            if (viewType =="single") {
-                manager.beginTransaction().replace(R.id.quoteBody, multiQuoteFragment).commit()
-                viewType="multi"
-            }
-            else if (viewType=="multi"){
-                manager.beginTransaction().replace(R.id.quoteBody, singleQuoteFragment).commit()
-                viewType="single"
-            }
-        }
 
         tabs.addOnTabSelectedListener(object: TabLayout.BaseOnTabSelectedListener<TabLayout.Tab>{
             override fun onTabReselected(p0: TabLayout.Tab?) {
@@ -133,6 +117,7 @@ class MainFragment : Fragment() {
         })
 
         quoteVM!!.fetchRandom()
+        setHasOptionsMenu(true)
         return rootView
     }
 
@@ -161,6 +146,27 @@ class MainFragment : Fragment() {
     interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         fun onFragmentInteraction(uri: Uri)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.action_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        val id = item.itemId
+        if (id==R.id.singleQuote){
+            if (viewType !="single") {
+                manager.beginTransaction().replace(R.id.quoteBody, singleQuoteFragment).commit()
+                viewType="single"
+            }
+        }
+        else if (id==R.id.multiQuote){
+            if (viewType!="multi"){
+                manager.beginTransaction().replace(R.id.quoteBody, multiQuoteFragment).commit()
+                viewType="multi"
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
 }
