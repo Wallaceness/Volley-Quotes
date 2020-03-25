@@ -3,19 +3,16 @@ package com.example.android.volleydemo
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle
+import android.view.*
+import android.widget.Toast
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.TextView
-import androidx.databinding.BindingAdapter
-import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.LiveData
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
+import com.android.volley.VolleyError
 import com.example.android.volleydemo.ViewModel.QuoteViewModel
-import com.example.android.volleydemo.databinding.FragmentMainBinding
 import com.google.android.material.tabs.TabLayout
 import org.json.JSONObject
+
 
 /**
  * A simple [Fragment] subclass.
@@ -25,11 +22,16 @@ import org.json.JSONObject
  */
 class MainFragment : Fragment() {
     private var listener: OnFragmentInteractionListener? = null
-    private var dataBinder: FragmentMainBinding? = null
     var quoteVM: QuoteViewModel?=null
-    var quote: LiveData<JSONObject>?=null
+    var quote: Quote?=null
     lateinit var tabs:TabLayout
     var currentTab:String = "random"
+    lateinit var singleQuoteFragment:SingleQuoteFragment
+    lateinit var multiQuoteFragment:FetchedQuotesFragment
+    lateinit var authorFragment:AuthorInfoFragment
+    var viewType = "single"
+    var searchValue:String?=null
+    lateinit var manager:FragmentManager
 
 
     override fun onCreateView(
@@ -37,13 +39,16 @@ class MainFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        QuoteViewModel.VolleyQueue.init(requireActivity()!!.applicationContext)
-        dataBinder = DataBindingUtil.inflate(inflater, R.layout.fragment_main, container, false)
-        val rootView = dataBinder?.root
+        QuoteViewModel.VolleyQueue.init(requireActivity().applicationContext)
+        val rootView:View = inflater.inflate(R.layout.fragment_main, container, false)
         quoteVM = QuoteViewModel(requireActivity().application)
-        tabs = rootView!!.findViewById(R.id.tabLayout)
-        val manager = childFragmentManager
+        tabs = rootView.findViewById(R.id.tabLayout)
+        manager = childFragmentManager
         manager.beginTransaction().add(R.id.controlPanel, RandomFragment()).commit()
+        singleQuoteFragment = SingleQuoteFragment()
+        multiQuoteFragment = FetchedQuotesFragment(currentTab)
+        authorFragment = AuthorInfoFragment()
+        manager.beginTransaction().replace(R.id.quoteBody, singleQuoteFragment).commit()
 
         tabs.addOnTabSelectedListener(object: TabLayout.BaseOnTabSelectedListener<TabLayout.Tab>{
             override fun onTabReselected(p0: TabLayout.Tab?) {
@@ -58,28 +63,69 @@ class MainFragment : Fragment() {
                 manager.beginTransaction().replace(R.id.controlPanel, when(p0?.text){
                     "Random"-> {
                         currentTab = "random"
+                        manager.beginTransaction().remove(authorFragment).commit()
+                        rootView.findViewById<View>(R.id.authorInfo).visibility=View.GONE
+                        multiQuoteFragment.resetType("random")
                         RandomFragment()
                     }
                     "By Keyword" ->{
                         currentTab = "keyword"
+                        manager.beginTransaction().remove(authorFragment).commit()
+                        rootView.findViewById<View>(R.id.authorInfo).visibility=View.GONE
+                        multiQuoteFragment.resetType("keyword")
                         SearchFragment()
                     }
                     "By Author" ->{
                         currentTab = "author"
+                        manager.beginTransaction().replace(R.id.authorInfo, authorFragment).commit()
+                        multiQuoteFragment.resetType("author")
                         SearchFragment()
                     }
                     else -> Fragment()
                 }).commit()
+                if (viewType == "single"){
+                    singleQuoteFragment.setBinding(null)
+                }
+                else if (viewType == "multi"){
+                    multiQuoteFragment = FetchedQuotesFragment(currentTab)
+                    manager.beginTransaction().replace(R.id.quoteBody, multiQuoteFragment).commit()
+                }
+                searchValue = null
 
             }
 
         })
         quoteVM?.getQuote()?.observe(viewLifecycleOwner, Observer<JSONObject> {response->
-            dataBinder?.quote = response
+            val quote = Quote(
+                response.optString("message", ""),
+                response.optString("author", ""),
+                response.optString("keywords", ""),
+                response.optString("profession", ""),
+                response.optString("nationality", ""),
+                response.optString("authorBirth", ""),
+                response.optString("authorDeath", "")
+            )
+            if (currentTab == "author"){
+                rootView.findViewById<View>(R.id.authorInfo).visibility = View.VISIBLE
+                authorFragment.binding.quote =quote
+            }
+            singleQuoteFragment.setBinding(quote)
+        })
+        quoteVM?.getError()?.observe(viewLifecycleOwner, Observer<VolleyError> { e ->
+            val responseBody = String(e.networkResponse.data)
+            Toast.makeText(requireContext(), responseBody, Toast.LENGTH_LONG).show()
         })
 
         quoteVM!!.fetchRandom()
+        setHasOptionsMenu(true)
         return rootView
+    }
+
+    fun newSearchValue(term:String){
+        searchValue = term
+        if (viewType == "multi"){
+            multiQuoteFragment.startFetching()
+        }
     }
 
 
@@ -97,20 +143,30 @@ class MainFragment : Fragment() {
         listener = null
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     *
-     *
-     * See the Android Training lesson [Communicating with Other Fragments]
-     * (http://developer.android.com/training/basics/fragments/communicating.html)
-     * for more information.
-     */
     interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         fun onFragmentInteraction(uri: Uri)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.action_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        val id = item.itemId
+        if (id==R.id.singleQuote){
+            if (viewType !="single") {
+                manager.beginTransaction().replace(R.id.quoteBody, singleQuoteFragment).commit()
+                viewType="single"
+            }
+        }
+        else if (id==R.id.multiQuote){
+            if (viewType!="multi"){
+                manager.beginTransaction().replace(R.id.quoteBody, multiQuoteFragment).commit()
+                viewType="multi"
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
 }

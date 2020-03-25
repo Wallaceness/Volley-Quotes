@@ -9,4 +9,15 @@
     <string name="random_tab">Random</string>
     <string name="by_keyword">By Keyword</string>
     <string name="by_author">By Author</string>
+    <string name="saved_quotes">Saved Quotes</string>
+    <string name="toggle">Toggle</string>
+    <string name="enter_search_above_to_fetch_quotes">Enter Search Above to Fetch Quotes</string>
+    <string name="find_quote">Find a Quote by Searching Above.</string>
+    <string name="confirm_message">Are you sure you want to delete this quote?</string>
+    <string name="delete">Delete</string>
+    <string name="cancel">Cancel</string>
+    <string name="app_settings">App Settings</string>
+    <string name="find_quotes">Find Quotes</string>
+    <string name="multi">Multi</string>
+    <string name="single">Single</string>
 </resources>
