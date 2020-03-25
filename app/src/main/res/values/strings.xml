@@ -16,4 +16,6 @@
     <string name="confirm_message">Are you sure you want to delete this quote?</string>
     <string name="delete">Delete</string>
     <string name="cancel">Cancel</string>
+    <string name="app_settings">App Settings</string>
+    <string name="find_quotes">Find Quotes</string>
 </resources>

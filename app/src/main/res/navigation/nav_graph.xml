@@ -8,19 +8,37 @@
     <fragment
         android:id="@+id/mainFragment"
         android:name="com.example.android.volleydemo.MainFragment"
-        android:label="fragment_main"
+        android:label="Quote Mine"
         tools:layout="@layout/fragment_main" >
         <action
             android:id="@+id/action_mainFragment_to_savedQuotesFragment"
             app:destination="@id/savedQuotesFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
     </fragment>
     <fragment
         android:id="@+id/savedQuotesFragment"
         android:name="com.example.android.volleydemo.SavedQuotesFragment"
-        android:label="fragment_saved_quotes"
+        android:label="Your Saved Quotes"
         tools:layout="@layout/fragment_saved_quotes" >
         <action
             android:id="@+id/action_savedQuotesFragment_to_mainFragment"
+            app:destination="@id/mainFragment" />
+        <action
+            android:id="@+id/action_savedQuotesFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.example.android.volleydemo.SettingsFragment"
+        android:label="fragment_settings"
+        tools:layout="@layout/fragment_settings" >
+        <action
+            android:id="@+id/action_settingsFragment_to_savedQuotesFragment"
+            app:destination="@id/savedQuotesFragment" />
+        <action
+            android:id="@+id/action_settingsFragment_to_mainFragment"
             app:destination="@id/mainFragment" />
     </fragment>
 </navigation>

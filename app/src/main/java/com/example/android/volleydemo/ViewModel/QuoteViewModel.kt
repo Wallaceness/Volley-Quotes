@@ -16,6 +16,7 @@ import com.example.android.volleydemo.Quote
 import com.example.android.volleydemo.SavedQuotesDB
 import com.example.android.volleydemo.Secrets
 import org.json.JSONObject
+import java.util.*
 
 class QuoteViewModel(@NonNull application: Application) : AndroidViewModel(Application()) {
     private val quote : MutableLiveData<JSONObject> = MutableLiveData()
@@ -47,6 +48,7 @@ class QuoteViewModel(@NonNull application: Application) : AndroidViewModel(Appli
     }
 
     fun fetchByKeyword(term: String) {
+        var term = term.substring(0, 1).toUpperCase()+term.substring(1)
         val url = "${base}keyword/${term}"
         val request = object : JsonObjectRequest(url, null, successListener, errorListener) {
 
@@ -73,7 +75,10 @@ class QuoteViewModel(@NonNull application: Application) : AndroidViewModel(Appli
     }
 
     fun fetchByAuthor(author: String) {
-        val request = object: JsonObjectRequest(Request.Method.GET, base + "author/" + author, null,
+        var term = author.split(" ")
+        term = term.map {it.substring(0, 1).toUpperCase()+it.substring(1)}
+       var result = term.joinToString(separator = " ")
+        val request = object: JsonObjectRequest(Request.Method.GET, base + "author/" + result, null,
             successListener, errorListener
         ){
             override fun getHeaders(): MutableMap<String, String> =

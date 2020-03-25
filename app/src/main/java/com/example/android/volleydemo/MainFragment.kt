@@ -51,12 +51,7 @@ class MainFragment : Fragment() {
         singleQuoteFragment = SingleQuoteFragment()
         multiQuoteFragment = FetchedQuotesFragment(currentTab)
         authorFragment = AuthorInfoFragment()
-        manager.beginTransaction().add(R.id.quoteBody, singleQuoteFragment).commit()
-
-        val navButton:Button =rootView.findViewById(R.id.navBtn)
-        navButton.setOnClickListener { v->
-            (activity as MainActivity).navigateTo(R.id.savedQuotesFragment)
-        }
+        manager.beginTransaction().replace(R.id.quoteBody, singleQuoteFragment).commit()
 
         toggleButton = rootView.findViewById(R.id.toggleBtn)
 
