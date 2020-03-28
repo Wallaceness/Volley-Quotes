@@ -1,11 +1,15 @@
 package com.example.android.volleydemo.View
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.net.Uri
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.getSystemService
 import androidx.navigation.fragment.NavHostFragment
 import com.example.android.volleydemo.MainFragment
 import com.example.android.volleydemo.R
@@ -34,6 +38,13 @@ class MainActivity : AppCompatActivity(), MainFragment.OnFragmentInteractionList
             }
 
         })
+
+        //creates notification channel
+        if (Build.VERSION.SDK_INT >=Build.VERSION_CODES.O){
+            val notificationMan = getSystemService<NotificationManager>()
+            val channel = NotificationChannel("QUOTES_CHANNEL", "QuotesChannel",NotificationManager.IMPORTANCE_DEFAULT)
+            notificationMan?.createNotificationChannel(channel)
+        }
     }
 
     override fun onFragmentInteraction(uri: Uri) {

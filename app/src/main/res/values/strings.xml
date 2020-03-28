@@ -20,4 +20,9 @@
     <string name="find_quotes">Find Quotes</string>
     <string name="multi">Multi</string>
     <string name="single">Single</string>
+    <string name="animation">Animation</string>
+    <string name="alerts">Alerts</string>
+    <string name="type">Type</string>
+    <string name="keyword_author">Keyword / Author</string>
+    <string name="frequency">Frequency</string>
 </resources>
