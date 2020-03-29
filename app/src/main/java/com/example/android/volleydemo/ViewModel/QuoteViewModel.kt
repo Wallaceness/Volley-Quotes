@@ -6,6 +6,7 @@ import androidx.annotation.NonNull
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.work.*
 import com.android.volley.Request
 import com.android.volley.RequestQueue
 import com.android.volley.Response
@@ -17,12 +18,15 @@ import com.example.android.volleydemo.SavedQuotesDB
 import com.example.android.volleydemo.Secrets
 import org.json.JSONObject
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 class QuoteViewModel(@NonNull application: Application) : AndroidViewModel(Application()) {
     private val quote : MutableLiveData<JSONObject> = MutableLiveData()
     private val error: MutableLiveData<VolleyError> = MutableLiveData()
     lateinit var savedQuotesDb: SavedQuotesDB
     private lateinit var savedQuotes: LiveData<List<Quote>>
+    private val AUTHOR_KEY = "AUTHOR"
+    private val KEYWORD_KEY = "KEYWORD"
 
 
     companion object VolleyQueue {
@@ -47,10 +51,10 @@ class QuoteViewModel(@NonNull application: Application) : AndroidViewModel(Appli
         this.error.postValue(error)
     }
 
-    fun fetchByKeyword(term: String) {
+    fun fetchByKeyword(term: String, succListener:Response.Listener<JSONObject> = successListener, errListener:Response.ErrorListener = errorListener) {
         var term = term.substring(0, 1).toUpperCase()+term.substring(1)
         val url = "${base}keyword/${term}"
-        val request = object : JsonObjectRequest(url, null, successListener, errorListener) {
+        val request = object : JsonObjectRequest(url, null, succListener, errListener) {
 
             override fun getHeaders(): MutableMap<String, String> =
                 hashMapOf<String, String>().apply {
@@ -61,9 +65,9 @@ class QuoteViewModel(@NonNull application: Application) : AndroidViewModel(Appli
         requestQueue?.add(request)
     }
 
-    fun fetchRandom() {
+    fun fetchRandom(succListener:Response.Listener<JSONObject> = successListener, errListener:Response.ErrorListener = errorListener) {
         val request = object: JsonObjectRequest(Request.Method.GET, base + "random", null,
-            successListener, errorListener
+            succListener, errListener
         ){
             override fun getHeaders(): MutableMap<String, String> =
                 hashMapOf<String, String>().apply {
@@ -74,12 +78,12 @@ class QuoteViewModel(@NonNull application: Application) : AndroidViewModel(Appli
         requestQueue?.add(request)
     }
 
-    fun fetchByAuthor(author: String) {
+    fun fetchByAuthor(author: String, succListener:Response.Listener<JSONObject> = successListener, errListener:Response.ErrorListener = errorListener) {
         var term = author.split(" ")
         term = term.map {it.substring(0, 1).toUpperCase()+it.substring(1)}
        var result = term.joinToString(separator = " ")
         val request = object: JsonObjectRequest(Request.Method.GET, base + "author/" + result, null,
-            successListener, errorListener
+            succListener, errListener
         ){
             override fun getHeaders(): MutableMap<String, String> =
                 hashMapOf<String, String>().apply {
@@ -108,5 +112,15 @@ class QuoteViewModel(@NonNull application: Application) : AndroidViewModel(Appli
 
     fun deleteQuote(quote: Quote){
         SavedQuotesDB.databaseWriteExecutor.execute({savedQuotesDb.quoteDao().delete(quote)})
+    }
+
+    fun createAlert(keyword:String?, author: String?, frequency:Int){
+        val data: Data = workDataOf(KEYWORD_KEY to keyword,
+            AUTHOR_KEY to author)
+
+        val alertRequest = PeriodicWorkRequestBuilder<AlertWorker>(frequency.toLong(), TimeUnit.SECONDS)
+        alertRequest.setInputData(data)
+        WorkManager.getInstance(getApplication()).enqueueUniquePeriodicWork("Alert"+keyword+author+frequency,
+            ExistingPeriodicWorkPolicy.REPLACE, alertRequest.build())
     }
 }
