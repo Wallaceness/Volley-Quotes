@@ -33,4 +33,12 @@
         <item>By Author</item>
     </string-array>
     <string name="create_alert">Create Alert</string>
+    <string-array name="frequency_array">
+        <item>Every 30 Minutes</item>
+        <item>Every hour</item>
+        <item>Every 2 hours</item>
+        <item>Every 5 hours</item>
+        <item>Every 12 hours</item>
+        <item>Once a day</item>
+    </string-array>
 </resources>

@@ -27,6 +27,8 @@ class QuoteViewModel(@NonNull application: Application) : AndroidViewModel(Appli
     private lateinit var savedQuotes: LiveData<List<Quote>>
     private val AUTHOR_KEY = "AUTHOR"
     private val KEYWORD_KEY = "KEYWORD"
+    private val TYPE_KEY = "TYPE"
+    private val FREQUENCY_KEY = "FREQUENCY"
 
 
     companion object VolleyQueue {
@@ -114,12 +116,14 @@ class QuoteViewModel(@NonNull application: Application) : AndroidViewModel(Appli
         SavedQuotesDB.databaseWriteExecutor.execute({savedQuotesDb.quoteDao().delete(quote)})
     }
 
-    fun createAlert(keyword:String?, author: String?, frequency:Int){
+    fun createAlert(keyword:String?, author: String?, frequency:Int, type:String){
         val data: Data = workDataOf(KEYWORD_KEY to keyword,
-            AUTHOR_KEY to author)
+            AUTHOR_KEY to author, TYPE_KEY to type, FREQUENCY_KEY to frequency)
 
         val alertRequest = PeriodicWorkRequestBuilder<AlertWorker>(frequency.toLong(), TimeUnit.SECONDS)
         alertRequest.setInputData(data)
+            .addTag("QuoteAlert")
+
         WorkManager.getInstance(getApplication()).enqueueUniquePeriodicWork("Alert"+keyword+author+frequency,
             ExistingPeriodicWorkPolicy.REPLACE, alertRequest.build())
     }

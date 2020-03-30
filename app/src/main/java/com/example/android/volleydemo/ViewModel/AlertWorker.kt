@@ -7,7 +7,9 @@ import android.content.Intent
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.work.CoroutineWorker
+import androidx.work.Data
 import androidx.work.WorkerParameters
+import androidx.work.workDataOf
 import com.android.volley.Response
 import com.example.android.volleydemo.R
 import org.json.JSONObject
@@ -22,6 +24,7 @@ class AlertWorker(appContext: Context, val workerParams: WorkerParameters)
         val author = workerParams.inputData.getString("AUTHOR")
         val keyword = workerParams.inputData.getString("KEYWORD")
         val title=if (author!=null){"$author Once Said: "} else if (keyword!=null)"$keyword Quote" else "Random Quote"
+        lateinit var result:Result
 
         val successListener = Response.Listener<JSONObject>{ quote->
             val intent = Intent()
@@ -30,14 +33,20 @@ class AlertWorker(appContext: Context, val workerParams: WorkerParameters)
             val notificationBuilder= NotificationCompat.Builder(applicationContext, "QUOTES_CHANNEL")
                 .setSmallIcon(R.drawable.ic_format_quote_black_24dp)
                 .setContentTitle(title)
-                .setContentText(quote.optString("message"))
+                .setStyle(NotificationCompat.BigTextStyle()
+                .bigText(quote.optString("message")))
                 .setContentIntent(pending)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setAutoCancel(true)
             val notifier = NotificationManagerCompat.from(applicationContext)
             notifier.notify(1, notificationBuilder.build())
+            val data=workDataOf("AUTHORKEYWORD" to (keyword?:author),
+                "TYPE" to workerParams.inputData.getString("TYPE"),
+                "FREQUENCY" to workerParams.inputData.getString("FREQUENCY"))
+            result= Result.success(data)
         }
         val errorListener = Response.ErrorListener { error->
+            result=Result.failure()
         }
         if (author!=null){
             vm.fetchByAuthor(author, successListener, errorListener)
@@ -49,6 +58,6 @@ class AlertWorker(appContext: Context, val workerParams: WorkerParameters)
             vm.fetchRandom(successListener, errorListener)
         }
 
-        return Result.success()
+        return result
     }
 }
