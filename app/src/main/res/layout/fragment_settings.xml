@@ -93,7 +93,7 @@
     
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="100dp"
         android:id="@+id/alertTable"
         app:layout_constraintBottom_toTopOf="@id/bottomSection"
         app:layout_constraintTop_toBottomOf="@id/keywordAuthorHeader"/>

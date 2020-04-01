@@ -127,16 +127,11 @@ class QuoteViewModel(@NonNull application: Application) : AndroidViewModel(Appli
             PeriodicWorkRequestBuilder<AlertWorker>(frequency.toLong(), TimeUnit.SECONDS)
         alertRequest.setInputData(data)
             .addTag("QuoteAlert")
+            .addTag("INFO_${type}_${author?:keyword}_$frequency")
 
         WorkManager.getInstance(getApplication()).enqueueUniquePeriodicWork(
             "Alert" + keyword + author + frequency,
             ExistingPeriodicWorkPolicy.REPLACE, alertRequest.build()
         )
-//        val editor = mainActivity.sharedPreferences.edit()
-//        editor.putString(KEYWORD_KEY, keyword)
-//        editor.putString(AUTHOR_KEY, author)
-//        editor.putString(TYPE_KEY, type)
-//        editor.putInt(FREQUENCY_KEY, frequency)
-//        editor.
     }
 }

@@ -11,6 +11,8 @@ import android.widget.ImageButton
 import android.widget.RadioGroup
 import androidx.constraintlayout.widget.Constraints.TAG
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import com.example.android.volleydemo.View.MainActivity
@@ -25,6 +27,8 @@ class SettingsFragment : Fragment() {
     lateinit var createAlertDialog:CreateAlert
     lateinit var animationsRadio:RadioGroup
     lateinit var sharedPreferences:SharedPreferences
+    lateinit var alertList:ArrayList<WorkInfo>
+    lateinit var recycler:RecyclerView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,11 +39,16 @@ class SettingsFragment : Fragment() {
         val rootView= inflater.inflate(R.layout.fragment_settings, container, false)
         SettingsVM = QuoteViewModel(requireActivity().application)
         animationsRadio = rootView.findViewById(R.id.animationOptions)
+
         val wm = WorkManager.getInstance(requireContext())
         val future: ListenableFuture<List<WorkInfo>> = wm.getWorkInfosByTag("QuoteAlert")
-        val list: List<WorkInfo> = future.get()
-        println(list.toString())
-//        SettingsVM.createAlert(null, null, 60*15)
+        alertList = ArrayList(future.get())
+//        initialize recyclerview
+        recycler = rootView.findViewById(R.id.alertTable)
+        val adapter = AlertsAdapter(alertList)
+        recycler.layoutManager = LinearLayoutManager(requireContext())
+        recycler.adapter = adapter
+
         val createButton = rootView.findViewById<ImageButton>(R.id.addAlert)
 
         createButton.setOnClickListener {
