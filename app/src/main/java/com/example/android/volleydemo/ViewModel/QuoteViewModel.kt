@@ -16,8 +16,8 @@ import com.android.volley.toolbox.Volley
 import com.example.android.volleydemo.Quote
 import com.example.android.volleydemo.SavedQuotesDB
 import com.example.android.volleydemo.Secrets
+import com.example.android.volleydemo.View.MainActivity
 import org.json.JSONObject
-import java.util.*
 import java.util.concurrent.TimeUnit
 
 class QuoteViewModel(@NonNull application: Application) : AndroidViewModel(Application()) {
@@ -29,6 +29,7 @@ class QuoteViewModel(@NonNull application: Application) : AndroidViewModel(Appli
     private val KEYWORD_KEY = "KEYWORD"
     private val TYPE_KEY = "TYPE"
     private val FREQUENCY_KEY = "FREQUENCY"
+    val app = application
 
 
     companion object VolleyQueue {
@@ -116,15 +117,26 @@ class QuoteViewModel(@NonNull application: Application) : AndroidViewModel(Appli
         SavedQuotesDB.databaseWriteExecutor.execute({savedQuotesDb.quoteDao().delete(quote)})
     }
 
-    fun createAlert(keyword:String?, author: String?, frequency:Int, type:String){
-        val data: Data = workDataOf(KEYWORD_KEY to keyword,
-            AUTHOR_KEY to author, TYPE_KEY to type, FREQUENCY_KEY to frequency)
+    fun createAlert(keyword:String?, author: String?, frequency:Int, type:String) {
+        val data: Data = workDataOf(
+            KEYWORD_KEY to keyword,
+            AUTHOR_KEY to author, TYPE_KEY to type, FREQUENCY_KEY to frequency
+        )
 
-        val alertRequest = PeriodicWorkRequestBuilder<AlertWorker>(frequency.toLong(), TimeUnit.SECONDS)
+        val alertRequest =
+            PeriodicWorkRequestBuilder<AlertWorker>(frequency.toLong(), TimeUnit.SECONDS)
         alertRequest.setInputData(data)
             .addTag("QuoteAlert")
 
-        WorkManager.getInstance(getApplication()).enqueueUniquePeriodicWork("Alert"+keyword+author+frequency,
-            ExistingPeriodicWorkPolicy.REPLACE, alertRequest.build())
+        WorkManager.getInstance(getApplication()).enqueueUniquePeriodicWork(
+            "Alert" + keyword + author + frequency,
+            ExistingPeriodicWorkPolicy.REPLACE, alertRequest.build()
+        )
+//        val editor = mainActivity.sharedPreferences.edit()
+//        editor.putString(KEYWORD_KEY, keyword)
+//        editor.putString(AUTHOR_KEY, author)
+//        editor.putString(TYPE_KEY, type)
+//        editor.putInt(FREQUENCY_KEY, frequency)
+//        editor.
     }
 }

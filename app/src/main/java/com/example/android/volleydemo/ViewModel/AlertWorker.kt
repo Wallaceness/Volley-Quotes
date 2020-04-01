@@ -4,6 +4,9 @@ import android.app.Application
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.os.Bundle
+import android.os.Looper
+import android.os.ResultReceiver
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.work.CoroutineWorker
@@ -11,6 +14,7 @@ import androidx.work.Data
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
 import com.android.volley.Response
+import com.example.android.volleydemo.Constants
 import com.example.android.volleydemo.R
 import org.json.JSONObject
 
@@ -40,13 +44,18 @@ class AlertWorker(appContext: Context, val workerParams: WorkerParameters)
                 .setAutoCancel(true)
             val notifier = NotificationManagerCompat.from(applicationContext)
             notifier.notify(1, notificationBuilder.build())
-            val data=workDataOf("AUTHORKEYWORD" to (keyword?:author),
-                "TYPE" to workerParams.inputData.getString("TYPE"),
-                "FREQUENCY" to workerParams.inputData.getString("FREQUENCY"))
-            result= Result.success(data)
+//            val data= Bundle()
+//            data.putString("AUTHORKEYWORD", keyword?:author)
+//            data.putString("TYPE", workerParams.inputData.getString("TYPE"))
+//            data.putString("FREQUENCY", workerParams.inputData.getString("FREQUENCY"))
+            result= Result.success()
+//            resultReceiver.send(Constants.Success_Result, data)
         }
         val errorListener = Response.ErrorListener { error->
             result=Result.failure()
+            val data = Bundle()
+            data.putString("ErrorMessage", error.message)
+//            resultReceiver.send(Constants.Failure_Result, data)
         }
         if (author!=null){
             vm.fetchByAuthor(author, successListener, errorListener)

@@ -15,37 +15,42 @@
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/animationTable"
+        app:layout_constraintBottom_toTopOf="@id/animationOptions"
         tools:layout_editor_absoluteX="149dp" />
 
-    <TableLayout
-        android:id="@+id/animationTable"
+    <RadioGroup
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="1dp"
-        android:layout_marginBottom="1dp"
+        android:id="@+id/animationOptions"
+        app:layout_constraintTop_toBottomOf="@id/animationSection"
         app:layout_constraintBottom_toTopOf="@+id/alertSection"
-        app:layout_constraintTop_toBottomOf="@+id/animationSection"
-        tools:layout_editor_absoluteX="1dp">
+        android:orientation="vertical">
+        <RadioButton android:id="@+id/noneOption"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/none"/>
+        <RadioButton android:id="@+id/fadeOption"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/fade_in" />
+        <RadioButton android:id="@+id/slideTopOption"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/slide_top" />
+        <RadioButton android:id="@+id/slideBottomOption"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/slide_bottom" />
+        <RadioButton android:id="@+id/slideLeftOption"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/slide_left" />
+        <RadioButton android:id="@+id/slideRightOption"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/slide_right" />
 
-        <TableRow
-            android:id="@+id/animationHeaders"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" >
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </TableLayout>
+    </RadioGroup>
 
     <TextView
         android:id="@+id/alertSection"
@@ -55,7 +60,7 @@
         android:text="@string/alerts"
         android:textSize="20sp"
         android:textStyle="bold"
-        app:layout_constraintTop_toBottomOf="@id/animationTable"
+        app:layout_constraintTop_toBottomOf="@id/animationOptions"
         app:layout_constraintBottom_toTopOf="@id/typeHeader"
         tools:layout_editor_absoluteX="149dp"
         tools:layout_editor_absoluteY="356dp" />

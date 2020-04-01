@@ -2,6 +2,8 @@ package com.example.android.volleydemo.View
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.content.Context
+import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
@@ -11,6 +13,7 @@ import androidx.appcompat.app.ActionBar
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.getSystemService
 import androidx.navigation.fragment.NavHostFragment
+import com.example.android.volleydemo.Constants
 import com.example.android.volleydemo.MainFragment
 import com.example.android.volleydemo.R
 import com.example.android.volleydemo.ViewModel.QuoteViewModel
@@ -20,10 +23,11 @@ class MainActivity : AppCompatActivity(), MainFragment.OnFragmentInteractionList
     lateinit var navigator:NavHostFragment
     lateinit var bottomView:BottomNavigationView
     lateinit var toolbar: ActionBar
-
+    lateinit var sharedPreferences:SharedPreferences
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        sharedPreferences =getSharedPreferences(Constants.SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE)
         navigator = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         bottomView = findViewById<BottomNavigationView>(R.id.bottom_navigation)
         toolbar = supportActionBar!!

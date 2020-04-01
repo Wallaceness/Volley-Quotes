@@ -33,6 +33,12 @@
         <item>By Author</item>
     </string-array>
     <string name="create_alert">Create Alert</string>
+    <string name="none">None</string>
+    <string name="fade_in">Fade-in</string>
+    <string name="slide_top">Slide Top</string>
+    <string name="slide_bottom">Slide Bottom</string>
+    <string name="slide_left">Slide Left</string>
+    <string name="slide_right">Slide Right</string>
     <string-array name="frequency_array">
         <item>Every 30 Minutes</item>
         <item>Every hour</item>
