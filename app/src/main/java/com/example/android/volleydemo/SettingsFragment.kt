@@ -22,13 +22,14 @@ import com.google.common.util.concurrent.ListenableFuture
 /**
  * A simple [Fragment] subclass.
  */
-class SettingsFragment : Fragment() {
+class SettingsFragment : Fragment(), AlertLaunchedListener {
     lateinit var SettingsVM:QuoteViewModel
     lateinit var createAlertDialog:CreateAlert
     lateinit var animationsRadio:RadioGroup
     lateinit var sharedPreferences:SharedPreferences
     lateinit var alertList:ArrayList<WorkInfo>
     lateinit var recycler:RecyclerView
+    lateinit var adapter:AlertsAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -45,7 +46,7 @@ class SettingsFragment : Fragment() {
         alertList = ArrayList(future.get())
 //        initialize recyclerview
         recycler = rootView.findViewById(R.id.alertTable)
-        val adapter = AlertsAdapter(alertList)
+        adapter = AlertsAdapter(alertList)
         recycler.layoutManager = LinearLayoutManager(requireContext())
         recycler.adapter = adapter
 
@@ -71,6 +72,22 @@ class SettingsFragment : Fragment() {
             }
         })
         return rootView
+    }
+
+    fun launchDelete(alert:WorkInfo){
+        val deleteAlert = DeleteAlert(this, "Are you sure you want to remove this notification alert?", alert)
+        deleteAlert.show(childFragmentManager, "SettingsFragment.DeleteAlert")
+    }
+
+    override fun delete(obj:Any){
+        val alert = obj as WorkInfo
+        val boss = WorkManager.getInstance(requireContext())
+        boss.cancelWorkById(alert.id)
+        boss.pruneWork()
+        val future: ListenableFuture<List<WorkInfo>> = boss.getWorkInfosByTag("QuoteAlert")
+        alertList = ArrayList(future.get())
+        adapter.alertsList = alertList
+        adapter.notifyDataSetChanged()
     }
 
     fun openDialog(){

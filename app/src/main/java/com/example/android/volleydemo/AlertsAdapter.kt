@@ -3,9 +3,13 @@ package com.example.android.volleydemo
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.ImageButton
 import android.widget.TextView
+import androidx.fragment.app.findFragment
 import androidx.recyclerview.widget.RecyclerView
 import androidx.work.WorkInfo
+import androidx.work.WorkManager
 
 class AlertsAdapter(list:ArrayList<WorkInfo>):RecyclerView.Adapter<AlertsAdapter.AlertHolder>() {
     var alertsList:ArrayList<WorkInfo> = list
@@ -28,20 +32,44 @@ class AlertsAdapter(list:ArrayList<WorkInfo>):RecyclerView.Adapter<AlertsAdapter
                 parsed=string.split("_")
             }
         }
+        holder.workInfo = info
         holder.type.text = parsed.get(1)
-        holder.authorKeyword.text =parsed.get(2)
-        holder.frequency.text = parsed.get(3)
+        holder.authorKeyword.text =if (parsed.get(2)=="null") "-" else parsed.get(2)
+        holder.frequency.text = parseFrequency(parsed.get(3))
+    }
+
+    fun parseFrequency(time:String): String{
+        var seconds= Integer.parseInt(time)
+        var reps = 0
+        while (seconds>=60){
+            seconds/=60
+            reps+=1
+        }
+        val unit = when(reps){
+            1->"Minutes"
+            2->"Hours"
+            else-> ""
+        }
+
+        return "$seconds $unit"
     }
 
     class AlertHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
         lateinit var type:TextView
         lateinit var authorKeyword: TextView
         lateinit var frequency:TextView
+        val delete: ImageButton = itemView.findViewById(R.id.deleteButton)
+        lateinit var workInfo:WorkInfo
 
         init{
             type = itemView.findViewById(R.id.typeView)
             authorKeyword = itemView.findViewById(R.id.keywordOrAuthorView)
             frequency = itemView.findViewById(R.id.frequencyView)
+            delete.setOnClickListener {
+                itemView.findFragment<SettingsFragment>().launchDelete(workInfo)
+//                val deleteModal = DeleteAlert({it->WorkManager.getInstance(itemView.context).cancelWorkById(workInfo.id)}
+//                    , "Are you sure you want to delete this notification task?")
+            }
         }
     }
 }

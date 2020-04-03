@@ -18,7 +18,7 @@ import kotlin.jvm.internal.CallableReference
 /**
  * A simple [Fragment] subclass.
  */
-class SavedQuotesFragment : Fragment() {
+class SavedQuotesFragment : Fragment(),AlertLaunchedListener {
     var savedQuotes=arrayListOf<Quote>()
     lateinit var qvm:QuoteViewModel;
     lateinit var deleteDialog:DeleteAlert
@@ -42,13 +42,13 @@ class SavedQuotesFragment : Fragment() {
             return rootView
     }
 
-    fun deleteQuote(){
-        qvm.deleteQuote(selectedQuote)
+    override fun delete(obj:Any){
+        qvm.deleteQuote(obj as Quote)
     }
 
     fun launchDialog(quote: Quote){
         selectedQuote = quote
-        deleteDialog = DeleteAlert(this)
+        deleteDialog = DeleteAlert(this, getString(R.string.confirm_message), quote)
         deleteDialog.show(childFragmentManager, "DeleteAlertDialog")
     }
 

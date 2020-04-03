@@ -87,9 +87,18 @@
                 android:text="@string/frequency"
                 android:id="@+id/frequencyHeader"
                 app:layout_constraintStart_toEndOf="@id/keywordAuthorHeader"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/deleteColumnHeader"
                 app:layout_constraintTop_toBottomOf="@id/alertSection"
                 app:layout_constraintBottom_toTopOf="@id/alertTable"/>
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/deleteColumnHeader"
+        app:layout_constraintStart_toEndOf="@id/frequencyHeader"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/alertSection"
+        app:layout_constraintBottom_toTopOf="@id/alertTable"
+        />
     
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
