@@ -84,15 +84,20 @@ class SettingsFragment : Fragment(), AlertLaunchedListener {
         val boss = WorkManager.getInstance(requireContext())
         boss.cancelWorkById(alert.id)
         boss.pruneWork()
-        val future: ListenableFuture<List<WorkInfo>> = boss.getWorkInfosByTag("QuoteAlert")
-        alertList = ArrayList(future.get())
-        adapter.alertsList = alertList
-        adapter.notifyDataSetChanged()
+        refreshResults()
     }
 
     fun openDialog(){
         createAlertDialog = CreateAlert()
         createAlertDialog.show(childFragmentManager, "CreateAlert")
+    }
+
+    fun refreshResults(){
+        val boss = WorkManager.getInstance(requireContext())
+        val future: ListenableFuture<List<WorkInfo>> = boss.getWorkInfosByTag("QuoteAlert")
+        alertList = ArrayList(future.get())
+        adapter.alertsList = alertList
+        adapter.notifyDataSetChanged()
     }
 
 }

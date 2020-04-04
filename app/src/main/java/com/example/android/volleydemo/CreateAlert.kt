@@ -8,6 +8,10 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.*
 import androidx.fragment.app.DialogFragment
+import com.android.volley.Response
+import kotlinx.coroutines.Deferred
+import org.json.JSONObject
+import java.time.Duration
 
 class CreateAlert: DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -84,15 +88,49 @@ class CreateAlert: DialogFragment() {
 
         builder.setView(rootView)
             .setTitle("New Quote Alert")
-            .setPositiveButton(R.string.create_alert,DialogInterface.OnClickListener { dialog, id->
-                val text = textField?.text.toString()
-                val author = if (type=="By Author")text else null
-                val keyword = if (type=="By Keyword")text else null
-                (parentFragment as SettingsFragment).SettingsVM.createAlert(keyword, author, frequency, type)
-            })
+            .setPositiveButton(R.string.create_alert, null)
             .setNegativeButton(R.string.cancel, DialogInterface.OnClickListener{dialog, id ->
                 getDialog()?.cancel()
             })
-        return builder.create()
+        val Adialog = builder.create()
+        Adialog.setOnShowListener(object: DialogInterface.OnShowListener {
+            override fun onShow(dialog: DialogInterface?) {
+                Adialog.getButton(androidx.appcompat.app.AlertDialog.BUTTON_POSITIVE).setOnClickListener here@{
+                    val text = textField?.text.toString()
+                    val parent = parentFragment as SettingsFragment
+                    val author = if (type=="By Author")text else null
+                    val keyword = if (type=="By Keyword")text else null
+                    if (type!="Random"){
+                        if(text==""){
+                            //validate that textfield isn't left blank
+                            Toast.makeText(requireContext(),"An author or keyword is required for this request.", Toast.LENGTH_LONG).show()
+                            return@here
+                        }
+                        else{
+//                        validate if the term returns any results
+                            if (author!=null){
+                                parent.SettingsVM.fetchByAuthor(text, Response.Listener<JSONObject>{ response->
+                                    parent.SettingsVM.createAlert(keyword, author, frequency, type)
+                                    parent.refreshResults()
+                                    Adialog.dismiss()
+                                },Response.ErrorListener {
+                                    Toast.makeText(requireContext(), "No such author found.", Toast.LENGTH_LONG).show()
+                                })
+                            }
+                            else if (keyword!=null){
+                                parent.SettingsVM.fetchByKeyword(text, Response.Listener<JSONObject>{ response->
+                                    parent.SettingsVM.createAlert(keyword, author, frequency, type)
+                                    parent.refreshResults()
+                                    Adialog.dismiss()
+                                },Response.ErrorListener {
+                                    Toast.makeText(requireContext(), "Search term has no results.", Toast.LENGTH_LONG).show()
+                                })
+                            }
+                        }
+                    }
+                }
+            }
+        })
+        return Adialog
     }
 }
