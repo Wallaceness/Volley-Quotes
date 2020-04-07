@@ -14,7 +14,7 @@ import java.util.zip.Inflater
 /**
  * A simple [Fragment] subclass.
  */
-class SingleQuoteFragment : Fragment() {
+class SingleQuoteFragment(var quote:Quote?=null) : Fragment() {
     var databinder: QuoteItemBinding? = null
     lateinit var saveButton:ImageButton
 
@@ -31,6 +31,9 @@ class SingleQuoteFragment : Fragment() {
         saveButton.setOnClickListener {
             (parentFragment as MainFragment).quoteVM?.saveQuote(databinder?.quote!!)
         }
+        if (this.quote!=null){
+            setBinding(this.quote)
+        }
         return rootView
     }
 
@@ -44,5 +47,6 @@ class SingleQuoteFragment : Fragment() {
         }
         databinder?.root?.alpha = 1f
     }
+
 
 }

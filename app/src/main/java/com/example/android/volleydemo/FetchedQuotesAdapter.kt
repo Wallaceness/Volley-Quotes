@@ -7,9 +7,8 @@ import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.android.volleydemo.databinding.QuoteItemBinding
 
-class FetchedQuotesAdapter: RecyclerView.Adapter<FetchedQuotesAdapter.FetchedQuotesHolder>() {
+class FetchedQuotesAdapter(var fetchedQuotes:ArrayList<Quote>): RecyclerView.Adapter<FetchedQuotesAdapter.FetchedQuotesHolder>() {
 
-    private var fetchedQuotes: ArrayList<Quote> = ArrayList()
     private var onBottomReachedListener:onBottomReachedListener?=null
 
     class FetchedQuotesHolder constructor(quoteBinding: QuoteItemBinding): RecyclerView.ViewHolder(quoteBinding.root) {

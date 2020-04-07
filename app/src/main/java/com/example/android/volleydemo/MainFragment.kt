@@ -45,7 +45,13 @@ class MainFragment : Fragment() {
         tabs = rootView.findViewById(R.id.tabLayout)
         manager = childFragmentManager
         manager.beginTransaction().add(R.id.controlPanel, RandomFragment()).commit()
-        singleQuoteFragment = SingleQuoteFragment()
+        if (savedInstanceState!=null){
+            this.quote = savedInstanceState.getParcelable("single_quote")
+            singleQuoteFragment = SingleQuoteFragment(this.quote)
+        }
+        else{
+            singleQuoteFragment = SingleQuoteFragment()
+        }
         multiQuoteFragment = FetchedQuotesFragment(currentTab)
         authorFragment = AuthorInfoFragment()
         manager.beginTransaction().replace(R.id.quoteBody, singleQuoteFragment).commit()
@@ -85,6 +91,7 @@ class MainFragment : Fragment() {
                 }).commit()
                 if (viewType == "single"){
                     singleQuoteFragment.setBinding(null)
+                    manager.beginTransaction().replace(R.id.quoteBody, singleQuoteFragment).commit()
                 }
                 else if (viewType == "multi"){
                     multiQuoteFragment = FetchedQuotesFragment(currentTab)
@@ -105,9 +112,10 @@ class MainFragment : Fragment() {
                 response.optString("authorBirth", ""),
                 response.optString("authorDeath", "")
             )
+            this.quote = quote
             if (currentTab == "author"){
                 rootView.findViewById<View>(R.id.authorInfo).visibility = View.VISIBLE
-                authorFragment.binding.quote =quote
+                authorFragment.binding.quote =this.quote
             }
             singleQuoteFragment.setBinding(quote)
         })
@@ -116,7 +124,9 @@ class MainFragment : Fragment() {
             Toast.makeText(requireContext(), responseBody, Toast.LENGTH_LONG).show()
         })
 
-        quoteVM!!.fetchRandom()
+        if (savedInstanceState==null){
+            quoteVM!!.fetchRandom()
+        }
         setHasOptionsMenu(true)
         return rootView
     }
@@ -167,6 +177,14 @@ class MainFragment : Fragment() {
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putParcelable("single_quote", this.quote)
+        outState.putString("view_type", this.viewType)
+        outState.putString("current_tab", this.currentTab)
+        outState.putString("search_term", this.searchValue)
+        super.onSaveInstanceState(outState)
     }
 
 }

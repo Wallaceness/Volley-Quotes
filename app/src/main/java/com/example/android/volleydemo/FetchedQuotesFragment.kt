@@ -22,6 +22,7 @@ class FetchedQuotesFragment constructor(type:String): Fragment() {
     var type=type
     lateinit var parent:MainFragment
     lateinit var emptyView:TextView
+    var quotes = ArrayList<Quote>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -30,7 +31,10 @@ class FetchedQuotesFragment constructor(type:String): Fragment() {
         vm = QuoteViewModel(requireActivity().application)
         val rootView:View = inflater.inflate(R.layout.fragment_fetched_quote, container, false)
         val recycler:RecyclerView = rootView.findViewById(R.id.fetchedQuoteRecycler)
-        val adapter= FetchedQuotesAdapter()
+        if (savedInstanceState!=null){
+            quotes = savedInstanceState.getParcelableArrayList<Quote>("quote_list") as ArrayList<Quote>
+        }
+        val adapter= FetchedQuotesAdapter(quotes)
         parent = parentFragment as MainFragment
         emptyView = rootView.findViewById(R.id.view_empty)
         adapter.setOnBottomReachedListener(object: onBottomReachedListener{
@@ -83,6 +87,11 @@ class FetchedQuotesFragment constructor(type:String): Fragment() {
         else if (type=="keyword" && parent.searchValue!=null){
             vm.fetchByKeyword(parent.searchValue!!)
         }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putParcelableArray("quote_list", quotes.toTypedArray())
+        super.onSaveInstanceState(outState)
     }
 
 }
