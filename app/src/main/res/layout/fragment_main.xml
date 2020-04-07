@@ -15,18 +15,21 @@
         android:id="@+id/tabLayout">
 
         <com.google.android.material.tabs.TabItem
+            android:id="@+id/randomTabItem"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/random_tab"
             />
 
         <com.google.android.material.tabs.TabItem
+            android:id="@+id/keywordTabItem"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/by_keyword"
             />
 
         <com.google.android.material.tabs.TabItem
+            android:id="@+id/authorTabItem"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/by_author"

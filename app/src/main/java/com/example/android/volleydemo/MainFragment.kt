@@ -32,6 +32,7 @@ class MainFragment : Fragment() {
     var viewType = "single"
     var searchValue:String?=null
     lateinit var manager:FragmentManager
+    lateinit var authorContainer:View
 
 
     override fun onCreateView(
@@ -44,17 +45,48 @@ class MainFragment : Fragment() {
         quoteVM = QuoteViewModel(requireActivity().application)
         tabs = rootView.findViewById(R.id.tabLayout)
         manager = childFragmentManager
-        manager.beginTransaction().add(R.id.controlPanel, RandomFragment()).commit()
+        authorContainer = rootView.findViewById(R.id.authorInfo)
+        authorFragment = AuthorInfoFragment()
+        //reset state after orientation change
         if (savedInstanceState!=null){
             this.quote = savedInstanceState.getParcelable("single_quote")
-            singleQuoteFragment = SingleQuoteFragment(this.quote)
+            currentTab = savedInstanceState.getString("current_tab")!!
+            viewType = savedInstanceState.getString("view_type") as String
+            searchValue = savedInstanceState.getString("search_term")
+            if (viewType == "single"){
+                singleQuoteFragment = SingleQuoteFragment(this.quote)
+                multiQuoteFragment = FetchedQuotesFragment(currentTab)
+            }
+            else if (viewType == "multi"){
+                multiQuoteFragment = manager.findFragmentById(R.id.quoteBody) as FetchedQuotesFragment
+                singleQuoteFragment = SingleQuoteFragment()
+            }
+            if (currentTab == "author"){
+                authorFragment=manager.findFragmentById(R.id.authorInfo) as AuthorInfoFragment
+                if (this.quote!=null){
+                    authorContainer.visibility = View.VISIBLE
+                }
+            }
         }
         else{
             singleQuoteFragment = SingleQuoteFragment()
+            multiQuoteFragment = FetchedQuotesFragment(currentTab)
+            manager.beginTransaction().add(R.id.controlPanel, RandomFragment()).commit()
         }
-        multiQuoteFragment = FetchedQuotesFragment(currentTab)
-        authorFragment = AuthorInfoFragment()
-        manager.beginTransaction().replace(R.id.quoteBody, singleQuoteFragment).commit()
+
+        when(currentTab){
+                "random"-> tabs.getTabAt(0)?.select()
+                "keyword"->tabs.getTabAt(1)?.select()
+                "author"->tabs.getTabAt(2)?.select()
+        }
+
+        if (viewType == "single"){
+            singleQuoteFragment.setBinding(null)
+            manager.beginTransaction().replace(R.id.quoteBody, singleQuoteFragment).commit()
+        }
+        else if (viewType == "multi"){
+            manager.beginTransaction().replace(R.id.quoteBody, multiQuoteFragment).commit()
+        }
 
         tabs.addOnTabSelectedListener(object: TabLayout.BaseOnTabSelectedListener<TabLayout.Tab>{
             override fun onTabReselected(p0: TabLayout.Tab?) {
@@ -70,14 +102,14 @@ class MainFragment : Fragment() {
                     "Random"-> {
                         currentTab = "random"
                         manager.beginTransaction().remove(authorFragment).commit()
-                        rootView.findViewById<View>(R.id.authorInfo).visibility=View.GONE
+                        authorContainer.visibility=View.GONE
                         multiQuoteFragment.resetType("random")
                         RandomFragment()
                     }
                     "By Keyword" ->{
                         currentTab = "keyword"
                         manager.beginTransaction().remove(authorFragment).commit()
-                        rootView.findViewById<View>(R.id.authorInfo).visibility=View.GONE
+                        authorContainer.visibility=View.GONE
                         multiQuoteFragment.resetType("keyword")
                         SearchFragment()
                     }
@@ -89,6 +121,7 @@ class MainFragment : Fragment() {
                     }
                     else -> Fragment()
                 }).commit()
+                quote = null
                 if (viewType == "single"){
                     singleQuoteFragment.setBinding(null)
                     manager.beginTransaction().replace(R.id.quoteBody, singleQuoteFragment).commit()
@@ -114,8 +147,7 @@ class MainFragment : Fragment() {
             )
             this.quote = quote
             if (currentTab == "author"){
-                rootView.findViewById<View>(R.id.authorInfo).visibility = View.VISIBLE
-                authorFragment.binding.quote =this.quote
+                showAuthorInfo(quote)
             }
             singleQuoteFragment.setBinding(quote)
         })
@@ -174,9 +206,16 @@ class MainFragment : Fragment() {
             if (viewType!="multi"){
                 manager.beginTransaction().replace(R.id.quoteBody, multiQuoteFragment).commit()
                 viewType="multi"
+                this.quote = null
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+
+    fun showAuthorInfo(quote:Quote?){
+        authorContainer.visibility = View.VISIBLE
+        authorFragment.binding?.quote =quote
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -186,5 +225,4 @@ class MainFragment : Fragment() {
         outState.putString("search_term", this.searchValue)
         super.onSaveInstanceState(outState)
     }
-
 }

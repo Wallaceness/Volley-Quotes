@@ -13,7 +13,7 @@ import com.example.android.volleydemo.databinding.FragmentAuthorInfoBinding
  */
 class AuthorInfoFragment : Fragment() {
 
-    lateinit var binding:FragmentAuthorInfoBinding
+    var binding:FragmentAuthorInfoBinding?=null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -21,7 +21,15 @@ class AuthorInfoFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_author_info, container, false)
-        return binding.root
+        if (savedInstanceState!=null){
+            binding?.quote = savedInstanceState.getParcelable("quote_item")
+        }
+        return binding?.root
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putParcelable("quote_item", binding?.quote)
+        super.onSaveInstanceState(outState)
     }
 
 }

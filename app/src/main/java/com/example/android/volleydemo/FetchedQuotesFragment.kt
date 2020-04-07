@@ -1,7 +1,5 @@
 package com.example.android.volleydemo
 
-import android.app.Application
-import android.opengl.Visibility
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -17,12 +15,18 @@ import org.json.JSONObject
 /**
  * A simple [Fragment] subclass.
  */
-class FetchedQuotesFragment constructor(type:String): Fragment() {
+class FetchedQuotesFragment(): Fragment() {
+
+
     lateinit var vm:QuoteViewModel
-    var type=type
+    lateinit var type:String
     lateinit var parent:MainFragment
     lateinit var emptyView:TextView
     var quotes = ArrayList<Quote>()
+
+    constructor(type:String) : this() {
+        this.type=type
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -31,11 +35,15 @@ class FetchedQuotesFragment constructor(type:String): Fragment() {
         vm = QuoteViewModel(requireActivity().application)
         val rootView:View = inflater.inflate(R.layout.fragment_fetched_quote, container, false)
         val recycler:RecyclerView = rootView.findViewById(R.id.fetchedQuoteRecycler)
+        parent = parentFragment as MainFragment
         if (savedInstanceState!=null){
             quotes = savedInstanceState.getParcelableArrayList<Quote>("quote_list") as ArrayList<Quote>
+            type = savedInstanceState.getString("quote_type")!!
+            if (type=="author" && quotes.size>0){
+                parent.authorContainer.visibility = View.VISIBLE
+            }
         }
         val adapter= FetchedQuotesAdapter(quotes)
-        parent = parentFragment as MainFragment
         emptyView = rootView.findViewById(R.id.view_empty)
         adapter.setOnBottomReachedListener(object: onBottomReachedListener{
             override fun onBottomReached(position: Int) {
@@ -63,7 +71,7 @@ class FetchedQuotesFragment constructor(type:String): Fragment() {
                 response.optString("authorDeath", "")
             )
             if (type=="author"){
-                parent.authorFragment.binding.quote = quote
+                parent.showAuthorInfo(quote)
             }
             adapter.addQuote(quote)
         })
@@ -90,7 +98,8 @@ class FetchedQuotesFragment constructor(type:String): Fragment() {
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putParcelableArray("quote_list", quotes.toTypedArray())
+        outState.putParcelableArrayList("quote_list", quotes)
+        outState.putString("quote_type", type)
         super.onSaveInstanceState(outState)
     }
 
