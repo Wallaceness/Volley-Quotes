@@ -43,7 +43,7 @@ class FetchedQuotesFragment(): Fragment() {
                 parent.authorContainer.visibility = View.VISIBLE
             }
         }
-        val adapter= FetchedQuotesAdapter(quotes)
+        val adapter= FetchedQuotesAdapter(quotes, this)
         emptyView = rootView.findViewById(R.id.view_empty)
         adapter.setOnBottomReachedListener(object: onBottomReachedListener{
             override fun onBottomReached(position: Int) {
@@ -95,6 +95,10 @@ class FetchedQuotesFragment(): Fragment() {
         else if (type=="keyword" && parent.searchValue!=null){
             vm.fetchByKeyword(parent.searchValue!!)
         }
+    }
+
+    fun saveQuote(quote:Quote){
+        vm.saveQuote(quote)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

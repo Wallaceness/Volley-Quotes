@@ -128,6 +128,11 @@ class CreateAlert: DialogFragment() {
                             }
                         }
                     }
+                    else{
+                        parent.SettingsVM.createAlert(keyword, author, frequency, type)
+                        parent.refreshResults()
+                        Adialog.dismiss()
+                    }
                 }
             }
         })

@@ -15,7 +15,9 @@ import androidx.work.WorkerParameters
 import androidx.work.workDataOf
 import com.android.volley.Response
 import com.example.android.volleydemo.Constants
+import com.example.android.volleydemo.Quote
 import com.example.android.volleydemo.R
+import com.example.android.volleydemo.View.MainActivity
 import org.json.JSONObject
 
 
@@ -31,9 +33,16 @@ class AlertWorker(appContext: Context, val workerParams: WorkerParameters)
         lateinit var result:Result
 
         val successListener = Response.Listener<JSONObject>{ quote->
-            val intent = Intent()
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-            val pending = PendingIntent.getActivity(applicationContext, requestCode, intent, 0)
+            val intent = Intent(applicationContext, MainActivity::class.java)
+            intent.setFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT or Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY)
+            intent.putExtra("notification_quote", Quote(quote.optString("message"),
+                quote.optString("author"),
+                quote.optString("keywords"),
+                quote.optString("profession"),
+                quote.optString("nationality"),
+                quote.optString("authorBirth"),
+                quote.optString("authorDeath")))
+            val pending = PendingIntent.getActivity(applicationContext, requestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT)
             val notificationBuilder= NotificationCompat.Builder(applicationContext, "QUOTES_CHANNEL")
                 .setSmallIcon(R.drawable.ic_format_quote_black_24dp)
                 .setContentTitle(title)

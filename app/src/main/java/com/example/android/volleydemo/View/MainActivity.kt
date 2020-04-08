@@ -3,6 +3,7 @@ package com.example.android.volleydemo.View
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Build
@@ -15,6 +16,7 @@ import androidx.core.content.getSystemService
 import androidx.navigation.fragment.NavHostFragment
 import com.example.android.volleydemo.Constants
 import com.example.android.volleydemo.MainFragment
+import com.example.android.volleydemo.Quote
 import com.example.android.volleydemo.R
 import com.example.android.volleydemo.ViewModel.QuoteViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -61,4 +63,8 @@ class MainActivity : AppCompatActivity(), MainFragment.OnFragmentInteractionList
         NavHostFragment.findNavController(navigator).navigate(id)
     }
 
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+    }
 }

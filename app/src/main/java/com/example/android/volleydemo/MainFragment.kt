@@ -1,6 +1,7 @@
 package com.example.android.volleydemo
 
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.*
@@ -47,6 +48,7 @@ class MainFragment : Fragment() {
         manager = childFragmentManager
         authorContainer = rootView.findViewById(R.id.authorInfo)
         authorFragment = AuthorInfoFragment()
+
         //reset state after orientation change
         if (savedInstanceState!=null){
             this.quote = savedInstanceState.getParcelable("single_quote")
@@ -69,7 +71,12 @@ class MainFragment : Fragment() {
             }
         }
         else{
-            singleQuoteFragment = SingleQuoteFragment()
+            val intent: Intent? = activity?.getIntent()
+            val intentQuote:Quote? = intent?.getParcelableExtra("notification_quote")
+            if (intentQuote!=null ){
+                this.quote = intentQuote
+            }
+            singleQuoteFragment = SingleQuoteFragment(this.quote)
             multiQuoteFragment = FetchedQuotesFragment(currentTab)
             manager.beginTransaction().add(R.id.controlPanel, RandomFragment()).commit()
         }
@@ -156,7 +163,7 @@ class MainFragment : Fragment() {
             Toast.makeText(requireContext(), responseBody, Toast.LENGTH_LONG).show()
         })
 
-        if (savedInstanceState==null){
+        if (savedInstanceState==null && this.quote==null){
             quoteVM!!.fetchRandom()
         }
         setHasOptionsMenu(true)
