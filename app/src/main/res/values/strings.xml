@@ -39,6 +39,7 @@
     <string name="slide_bottom">Slide Bottom</string>
     <string name="slide_left">Slide Left</string>
     <string name="slide_right">Slide Right</string>
+    <string name="grid_view">Grid View</string>
     <string-array name="frequency_array">
         <item>Every 30 Minutes</item>
         <item>Every hour</item>

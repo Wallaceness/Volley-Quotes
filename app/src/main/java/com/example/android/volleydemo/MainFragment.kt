@@ -2,6 +2,7 @@ package com.example.android.volleydemo
 
 import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
 import android.net.Uri
 import android.os.Bundle
 import android.view.*
@@ -13,6 +14,8 @@ import com.android.volley.VolleyError
 import com.example.android.volleydemo.ViewModel.QuoteViewModel
 import com.google.android.material.tabs.TabLayout
 import org.json.JSONObject
+import java.util.concurrent.CompletableFuture
+import java.util.concurrent.Future
 
 
 /**
@@ -198,7 +201,12 @@ class MainFragment : Fragment() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.action_menu, menu)
+        if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT){
+            inflater.inflate(R.menu.action_menu, menu)
+        }
+        else{
+            inflater.inflate(R.menu.action_menu_landscape, menu)
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -214,6 +222,20 @@ class MainFragment : Fragment() {
                 manager.beginTransaction().replace(R.id.quoteBody, multiQuoteFragment).commit()
                 viewType="multi"
                 this.quote = null
+            }
+            else{
+                multiQuoteFragment.toggleView("linear")
+            }
+        }
+        else if (id==R.id.gridQuote){
+            if (viewType!="multi"){
+                multiQuoteFragment = FetchedQuotesFragment(currentTab, true)
+                manager.beginTransaction().replace(R.id.quoteBody, multiQuoteFragment).commit()
+                viewType=="multi"
+                this.quote=null
+            }
+            else{
+                multiQuoteFragment.toggleView("grid")
             }
         }
         return super.onOptionsItemSelected(item)

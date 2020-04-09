@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item android:id="@+id/multiQuote"
+        android:title="@string/multi"
+        android:icon="@drawable/ic_list_black_24dp"
+        app:showAsAction="ifRoom" />
+    <item android:id ="@+id/gridQuote"
+        android:title="@string/grid_view"
+        app:showAsAction="ifRoom"
+        android:icon="@drawable/ic_grid_on_black_24dp"/>
+</menu>

@@ -2,14 +2,14 @@ package com.example.android.volleydemo
 
 import android.app.AlertDialog
 import android.content.DialogInterface
+import android.content.res.Configuration
 import android.os.Bundle
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.android.volleydemo.ViewModel.QuoteViewModel
@@ -23,13 +23,14 @@ class SavedQuotesFragment : Fragment(),AlertLaunchedListener {
     lateinit var qvm:QuoteViewModel;
     lateinit var deleteDialog:DeleteAlert
     lateinit var selectedQuote:Quote
+    lateinit var recycleView: RecyclerView
         override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
             // Inflate the layout for this fragment
             val rootView:View= inflater.inflate(R.layout.fragment_saved_quotes, container, false)
-            val recycleView = rootView.findViewById<RecyclerView>(R.id.savedQuotesRecyclerview)
+            recycleView = rootView.findViewById<RecyclerView>(R.id.savedQuotesRecyclerview)
             qvm = QuoteViewModel(requireActivity().application)
             val adapter= SavedQuotesAdapter(savedQuotes, this)
             val layoutManager = LinearLayoutManager(requireContext())
@@ -39,6 +40,7 @@ class SavedQuotesFragment : Fragment(),AlertLaunchedListener {
                 savedQuotes=response as ArrayList<Quote>
                 adapter.updateQuotes(savedQuotes)
             })
+            setHasOptionsMenu(true)
             return rootView
     }
 
@@ -50,6 +52,25 @@ class SavedQuotesFragment : Fragment(),AlertLaunchedListener {
         selectedQuote = quote
         deleteDialog = DeleteAlert(this, getString(R.string.confirm_message), quote)
         deleteDialog.show(childFragmentManager, "DeleteAlertDialog")
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE){
+            inflater.inflate(R.menu.action_menu_saved, menu)
+        }
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        val id =item.itemId
+        if (id==R.id.multiQuote){
+            recycleView.layoutManager = LinearLayoutManager(requireContext())
+        }
+        else if (id==R.id.gridQuote){
+            recycleView.layoutManager = GridLayoutManager(requireContext(),2)
+
+        }
+        return super.onOptionsItemSelected(item)
     }
 
 }

@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.android.volleydemo.ViewModel.QuoteViewModel
@@ -22,10 +23,14 @@ class FetchedQuotesFragment(): Fragment() {
     lateinit var type:String
     lateinit var parent:MainFragment
     lateinit var emptyView:TextView
+    lateinit var adapter: FetchedQuotesAdapter
+    var recycler:RecyclerView?=null
     var quotes = ArrayList<Quote>()
+    var grid=false
 
-    constructor(type:String) : this() {
+    constructor(type:String, grid:Boolean=false) : this() {
         this.type=type
+        this.grid = grid
     }
 
     override fun onCreateView(
@@ -34,7 +39,7 @@ class FetchedQuotesFragment(): Fragment() {
     ): View? {
         vm = QuoteViewModel(requireActivity().application)
         val rootView:View = inflater.inflate(R.layout.fragment_fetched_quote, container, false)
-        val recycler:RecyclerView = rootView.findViewById(R.id.fetchedQuoteRecycler)
+        recycler= rootView.findViewById(R.id.fetchedQuoteRecycler)
         parent = parentFragment as MainFragment
         if (savedInstanceState!=null){
             quotes = savedInstanceState.getParcelableArrayList<Quote>("quote_list") as ArrayList<Quote>
@@ -43,7 +48,7 @@ class FetchedQuotesFragment(): Fragment() {
                 parent.authorContainer.visibility = View.VISIBLE
             }
         }
-        val adapter= FetchedQuotesAdapter(quotes, this)
+        adapter= FetchedQuotesAdapter(quotes, this)
         emptyView = rootView.findViewById(R.id.view_empty)
         adapter.setOnBottomReachedListener(object: onBottomReachedListener{
             override fun onBottomReached(position: Int) {
@@ -75,10 +80,24 @@ class FetchedQuotesFragment(): Fragment() {
             }
             adapter.addQuote(quote)
         })
-        recycler.layoutManager = LinearLayoutManager(requireContext())
-        recycler.adapter = adapter
+        if (grid){
+            recycler?.layoutManager = GridLayoutManager(requireContext(), 2)
+        }
+        else{
+            recycler?.layoutManager = LinearLayoutManager(requireContext())
+        }
+        recycler?.adapter = adapter
         startFetching()
         return rootView
+    }
+
+    fun toggleView(view:String){
+        if (view == "grid"){
+            recycler?.layoutManager = GridLayoutManager(requireContext(),2)
+        }
+        else if (view == "linear"){
+            recycler?.layoutManager = LinearLayoutManager(requireContext())
+        }
     }
 
     fun resetType(type:String){
