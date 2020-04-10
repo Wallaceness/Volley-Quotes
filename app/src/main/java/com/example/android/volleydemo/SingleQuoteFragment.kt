@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.view.animation.AlphaAnimation
 import android.widget.ImageButton
 import androidx.databinding.DataBindingUtil
+import com.example.android.volleydemo.View.MainActivity
 import com.example.android.volleydemo.databinding.QuoteItemBinding
 import java.util.zip.Inflater
 
@@ -27,9 +28,14 @@ class SingleQuoteFragment(var quote:Quote?=null) : Fragment() {
         val rootView= databinder?.root
         databinder?.saved = false
         saveButton = rootView!!.findViewById(R.id.saveBtn)
+        val shareButton = rootView.findViewById<ImageButton>(R.id.shareBtn)
 
         saveButton.setOnClickListener {
             (parentFragment as MainFragment).quoteVM?.saveQuote(databinder?.quote!!)
+        }
+
+        shareButton.setOnClickListener {
+            (activity as MainActivity).shareQuote(databinder?.quote!!)
         }
         if (this.quote!=null){
             setBinding(this.quote)

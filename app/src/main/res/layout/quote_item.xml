@@ -48,15 +48,27 @@
 
     <TextView
         android:id="@+id/author"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@+id/quoteBody"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/shareBtn"
+        app:layout_constraintStart_toStartOf="parent"
         android:text="@{quote!=null?quote.formatAuthorLife():``}"
         android:textStyle="bold"
         android:textSize="12pt"
         android:layout_marginTop="5dp"
         />
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/shareBtn"
+        android:background="@drawable/ic_share_black_24dp"
+        android:visibility="@{quote!=null?View.VISIBLE:View.GONE}"
+        app:layout_constraintStart_toEndOf="@id/author"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/quoteBody"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

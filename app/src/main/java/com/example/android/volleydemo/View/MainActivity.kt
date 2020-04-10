@@ -12,6 +12,7 @@ import android.os.Bundle
 import android.view.MenuItem
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.widget.Toolbar
+import androidx.core.app.ShareCompat
 import androidx.core.content.getSystemService
 import androidx.navigation.fragment.NavHostFragment
 import com.example.android.volleydemo.Constants
@@ -61,6 +62,15 @@ class MainActivity : AppCompatActivity(), MainFragment.OnFragmentInteractionList
 
     fun navigateTo(id:Int){
         NavHostFragment.findNavController(navigator).navigate(id)
+    }
+
+    fun shareQuote(quote: Quote){
+        val mimeType = "text/plain"
+        ShareCompat.IntentBuilder.from(this)
+            .setType(mimeType)
+            .setChooserTitle("Choose an app to share with: ")
+            .setText("“${quote.message}”\n-${quote.formatAuthorLife()}")
+            .startChooser()
     }
 
     override fun onNewIntent(intent: Intent?) {

@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.example.android.volleydemo.View.MainActivity
 import com.example.android.volleydemo.ViewModel.QuoteViewModel
 import com.example.android.volleydemo.databinding.QuoteItemBinding
 import kotlin.jvm.internal.CallableReference
@@ -53,10 +54,15 @@ class SavedQuotesAdapter constructor(savedQuotes: ArrayList<Quote>, context: Sav
             binder.quote= quote
             binder.executePendingBindings()
             deleteButton= binder.root.findViewById(R.id.saveBtn)
+            val shareButton = binder.root.findViewById<ImageButton>(R.id.shareBtn)
 
             deleteButton.setOnClickListener(View.OnClickListener {
                 context.launchDialog(quote)
             })
+
+            shareButton.setOnClickListener {
+                (context.activity as MainActivity).shareQuote(quote)
+            }
         }
     }
 }

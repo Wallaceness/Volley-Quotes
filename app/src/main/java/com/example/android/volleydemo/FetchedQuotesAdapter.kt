@@ -7,6 +7,7 @@ import android.view.animation.AlphaAnimation
 import android.widget.ImageButton
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.example.android.volleydemo.View.MainActivity
 import com.example.android.volleydemo.databinding.QuoteItemBinding
 
 class FetchedQuotesAdapter(var fetchedQuotes:ArrayList<Quote>, var parent:FetchedQuotesFragment): RecyclerView.Adapter<FetchedQuotesAdapter.FetchedQuotesHolder>() {
@@ -25,9 +26,14 @@ class FetchedQuotesAdapter(var fetchedQuotes:ArrayList<Quote>, var parent:Fetche
             binder.root.startAnimation(fadeIn)
             binder.executePendingBindings()
             saveButton = binder.root.findViewById(R.id.saveBtn)
+            val shareButton = binder.root.findViewById<ImageButton>(R.id.shareBtn)
 
             saveButton.setOnClickListener {
                 (parent).saveQuote(quote)
+            }
+
+            shareButton.setOnClickListener{
+                (parent.activity as MainActivity).shareQuote(quote)
             }
         }
     }
