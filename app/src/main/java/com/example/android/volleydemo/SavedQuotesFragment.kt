@@ -12,6 +12,7 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.android.volleydemo.View.MainActivity
 import com.example.android.volleydemo.ViewModel.QuoteViewModel
 import kotlin.jvm.internal.CallableReference
 
@@ -36,10 +37,22 @@ class SavedQuotesFragment : Fragment(),AlertLaunchedListener {
             val layoutManager = LinearLayoutManager(requireContext())
             recycleView.layoutManager = layoutManager
             recycleView.adapter = adapter
-                qvm.getSavedQuotes().observe(viewLifecycleOwner, Observer { response->
+            qvm.getSavedQuotes().observe(viewLifecycleOwner, Observer { response->
                 savedQuotes=response as ArrayList<Quote>
                 adapter.updateQuotes(savedQuotes)
             })
+            recycleView.addOnScrollListener(object:RecyclerView.OnScrollListener(){
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    if (dy>0){
+                        (activity as MainActivity).toggleBottomNavigation(true)
+                    }
+                    else if (dy<0){
+                        (activity as MainActivity).toggleBottomNavigation(false)
+                    }
+                    super.onScrolled(recyclerView, dx, dy)
+                }
+            })
+
             setHasOptionsMenu(true)
             return rootView
     }

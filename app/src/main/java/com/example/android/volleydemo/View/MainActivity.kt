@@ -10,6 +10,7 @@ import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
+import android.view.View
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ShareCompat
@@ -58,7 +59,14 @@ class MainActivity : AppCompatActivity(), MainFragment.OnFragmentInteractionList
 
     }
 
-
+    fun toggleBottomNavigation(down:Boolean){
+        if (!down){
+            bottomView.visibility = View.VISIBLE
+        }
+        else{
+            bottomView.visibility = View.GONE
+        }
+    }
 
     fun navigateTo(id:Int){
         NavHostFragment.findNavController(navigator).navigate(id)

@@ -10,6 +10,7 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.android.volleydemo.View.MainActivity
 import com.example.android.volleydemo.ViewModel.QuoteViewModel
 import org.json.JSONObject
 
@@ -88,6 +89,17 @@ class FetchedQuotesFragment(): Fragment() {
         }
         recycler?.adapter = adapter
         startFetching()
+        recycler?.addOnScrollListener(object:RecyclerView.OnScrollListener(){
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                if (dy>0){
+                    (activity as MainActivity).toggleBottomNavigation(true)
+                }
+                else if (dy<0){
+                    (activity as MainActivity).toggleBottomNavigation(false)
+                }
+                super.onScrolled(recyclerView, dx, dy)
+            }
+        })
         return rootView
     }
 

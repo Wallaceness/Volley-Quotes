@@ -14,8 +14,6 @@ import com.android.volley.VolleyError
 import com.example.android.volleydemo.ViewModel.QuoteViewModel
 import com.google.android.material.tabs.TabLayout
 import org.json.JSONObject
-import java.util.concurrent.CompletableFuture
-import java.util.concurrent.Future
 
 
 /**
