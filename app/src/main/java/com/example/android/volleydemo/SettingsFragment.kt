@@ -55,6 +55,17 @@ class SettingsFragment : Fragment(), AlertLaunchedListener {
         createButton.setOnClickListener {
             openDialog()
         }
+//        assign values to radio group
+        val startingAnim = sharedPreferences.getString("AnimationType", "")
+        animationsRadio.check(when (startingAnim){
+            "none"->R.id.noneOption
+            "fade"->R.id.fadeOption
+            "slideTop"->R.id.slideTopOption
+            "slideBottom"->R.id.slideBottomOption
+            "slideLeft"->R.id.slideLeftOption
+            "slideRight"->R.id.slideRightOption
+            else->0
+        })
 
         animationsRadio.setOnCheckedChangeListener(RadioGroup.OnCheckedChangeListener{group, checkedId ->
             val editor = sharedPreferences?.edit()

@@ -1,17 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item android:id="@+id/searchBar"
+        android:title="@string/search_here"
+        android:icon="@drawable/ic_search_black_24dp"
+        app:showAsAction="always"
+        app:actionViewClass="android.widget.SearchView" />
     <item android:id="@+id/singleQuote"
         android:title="@string/single"
         android:icon="@drawable/ic_format_quote_black_24dp"
-        app:showAsAction="ifRoom">
+        app:showAsAction="always">
     </item>
     <item android:id="@+id/multiQuote"
         android:title="@string/multi"
         android:icon="@drawable/ic_list_black_24dp"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="always" />
     <item android:id ="@+id/gridQuote"
         android:title="@string/grid_view"
-        app:showAsAction="ifRoom"
+        app:showAsAction="always"
         android:icon="@drawable/ic_grid_on_black_24dp"/>
+    <group android:id="@+id/tabOptions" android:checkableBehavior="single">
+        <item android:id="@+id/randomItem"
+            android:title="@string/random_tab"
+            app:showAsAction="never"/>
+        <item android:id="@+id/keywordItem"
+            android:title="@string/by_keyword"
+            app:showAsAction="never"/>
+        <item android:id="@+id/authorItem"
+            android:title="@string/by_author"
+            app:showAsAction="never"/>
+    </group>
 </menu>

@@ -52,6 +52,7 @@ class SavedQuotesAdapter constructor(savedQuotes: ArrayList<Quote>, context: Sav
 
         fun bind(quote:Quote, context:SavedQuotesFragment) {
             binder.quote= quote
+            (context.activity as MainActivity).animateQuote(binder.root)
             binder.executePendingBindings()
             deleteButton= binder.root.findViewById(R.id.saveBtn)
             val shareButton = binder.root.findViewById<ImageButton>(R.id.shareBtn)

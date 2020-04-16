@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
+import android.view.animation.AnimationUtils
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ShareCompat
@@ -77,12 +78,28 @@ class MainActivity : AppCompatActivity(), MainFragment.OnFragmentInteractionList
         ShareCompat.IntentBuilder.from(this)
             .setType(mimeType)
             .setChooserTitle("Choose an app to share with: ")
-            .setText("“${quote.message}”\n-${quote.formatAuthorLife()}")
+            .setText("“${quote.message}”\n${quote.formatAuthorLife()}")
             .startChooser()
     }
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
         setIntent(intent)
+    }
+
+    fun animateQuote(view:View?){
+        val animationType = sharedPreferences.getString("AnimationType", "")
+        if (animationType!="none"){
+            val animation = AnimationUtils.loadAnimation(this, when(animationType){
+                "none"->R.id.noneOption
+                "fade"->R.anim.fadein
+                "slideTop"->R.anim.toptocenter
+                "slideBottom"->R.anim.bottomtocenter
+                "slideLeft"->R.anim.lefttoright
+                "slideRight"->R.anim.righttoleft
+                else-> 0
+            })
+            view?.startAnimation(animation)
+        }
     }
 }

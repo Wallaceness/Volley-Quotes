@@ -7,10 +7,12 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.*
 import android.widget.Toast
+import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import com.android.volley.VolleyError
+import com.example.android.volleydemo.View.MainActivity
 import com.example.android.volleydemo.ViewModel.QuoteViewModel
 import com.google.android.material.tabs.TabLayout
 import org.json.JSONObject
@@ -26,7 +28,7 @@ class MainFragment : Fragment() {
     private var listener: OnFragmentInteractionListener? = null
     var quoteVM: QuoteViewModel?=null
     var quote: Quote?=null
-    lateinit var tabs:TabLayout
+    var tabs:TabLayout?=null
     var currentTab:String = "random"
     lateinit var singleQuoteFragment:SingleQuoteFragment
     lateinit var multiQuoteFragment:FetchedQuotesFragment
@@ -45,7 +47,11 @@ class MainFragment : Fragment() {
         QuoteViewModel.VolleyQueue.init(requireActivity().applicationContext)
         val rootView:View = inflater.inflate(R.layout.fragment_main, container, false)
         quoteVM = QuoteViewModel(requireActivity().application)
-        tabs = rootView.findViewById(R.id.tabLayout)
+        //initialize tabs only if in portrait view
+        if (resources.configuration.orientation ==Configuration.ORIENTATION_PORTRAIT){
+            tabs = rootView.findViewById(R.id.tabLayout)
+
+        }
         manager = childFragmentManager
         authorContainer = rootView.findViewById(R.id.authorInfo)
         authorFragment = AuthorInfoFragment()
@@ -83,9 +89,9 @@ class MainFragment : Fragment() {
         }
 
         when(currentTab){
-                "random"-> tabs.getTabAt(0)?.select()
-                "keyword"->tabs.getTabAt(1)?.select()
-                "author"->tabs.getTabAt(2)?.select()
+                "random"-> tabs?.getTabAt(0)?.select()
+                "keyword"->tabs?.getTabAt(1)?.select()
+                "author"->tabs?.getTabAt(2)?.select()
         }
 
         if (viewType == "single"){
@@ -96,7 +102,7 @@ class MainFragment : Fragment() {
             manager.beginTransaction().replace(R.id.quoteBody, multiQuoteFragment).commit()
         }
 
-        tabs.addOnTabSelectedListener(object: TabLayout.BaseOnTabSelectedListener<TabLayout.Tab>{
+        tabs?.addOnTabSelectedListener(object: TabLayout.BaseOnTabSelectedListener<TabLayout.Tab>{
             override fun onTabReselected(p0: TabLayout.Tab?) {
                 println("Tab reselected")
             }
@@ -204,38 +210,94 @@ class MainFragment : Fragment() {
         }
         else{
             inflater.inflate(R.menu.action_menu_landscape, menu)
+            val searcher = SearchView((context as MainActivity).supportActionBar?.themedContext ?: context)
+            menu.findItem(R.id.searchBar).apply{
+                setShowAsAction(MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW or MenuItem.SHOW_AS_ACTION_IF_ROOM)
+                actionView = searcher
+            }
+
+            searcher.setOnQueryTextListener(object: SearchView.OnQueryTextListener{
+                override fun onQueryTextSubmit(query: String?): Boolean {
+                    if (query!=null){
+                        searchValue=query
+                        when(currentTab){
+                            "author"-> quoteVM?.fetchByAuthor(query)
+                            "keyword"->quoteVM?.fetchByKeyword(query)
+                            "random"->quoteVM?.fetchRandom()
+                        }
+                    }
+                    return true
+                }
+
+                override fun onQueryTextChange(newText: String?): Boolean {
+                    return true
+                }
+
+            })
         }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val id = item.itemId
-        if (id==R.id.singleQuote){
-            if (viewType !="single") {
+        when(id){
+            R.id.singleQuote->{
+                if (viewType !="single") {
+                    manager.beginTransaction().replace(R.id.quoteBody, singleQuoteFragment).commit()
+                    viewType="single"
+                }
+            }
+            R.id.multiQuote->{
+                if (viewType!="multi"){
+                    manager.beginTransaction().replace(R.id.quoteBody, multiQuoteFragment).commit()
+                    viewType="multi"
+                    this.quote = null
+                }
+                else{
+                    multiQuoteFragment.toggleView("linear")
+                }
+            }
+            R.id.gridQuote->{
+                if (viewType!="multi"){
+                    multiQuoteFragment = FetchedQuotesFragment(currentTab, true)
+                    manager.beginTransaction().replace(R.id.quoteBody, multiQuoteFragment).commit()
+                    viewType=="multi"
+                    this.quote=null
+                }
+                else{
+                    multiQuoteFragment.toggleView("grid")
+                }
+            }
+            R.id.randomItem->{
+                currentTab = "random"
+                manager.beginTransaction().remove(authorFragment).commit()
+                authorContainer.visibility=View.GONE
+                multiQuoteFragment.resetType("random")
+            }
+            R.id.keywordItem->{
+                currentTab = "keyword"
+                manager.beginTransaction().remove(authorFragment).commit()
+                authorContainer.visibility=View.GONE
+                multiQuoteFragment.resetType("keyword")
+            }
+            R.id.authorItem->{
+                currentTab = "author"
+                manager.beginTransaction().replace(R.id.authorInfo, authorFragment).commit()
+                multiQuoteFragment.resetType("author")
+            }
+            }
+        if (id==R.id.keywordItem || id==R.id.authorItem || id==R.id.randomItem){
+            quote = null
+            if (viewType == "single"){
+                singleQuoteFragment.setBinding(null)
                 manager.beginTransaction().replace(R.id.quoteBody, singleQuoteFragment).commit()
-                viewType="single"
             }
-        }
-        else if (id==R.id.multiQuote){
-            if (viewType!="multi"){
+            else if (viewType == "multi"){
+                multiQuoteFragment = FetchedQuotesFragment(currentTab)
                 manager.beginTransaction().replace(R.id.quoteBody, multiQuoteFragment).commit()
-                viewType="multi"
-                this.quote = null
             }
-            else{
-                multiQuoteFragment.toggleView("linear")
-            }
+            searchValue = null
         }
-        else if (id==R.id.gridQuote){
-            if (viewType!="multi"){
-                multiQuoteFragment = FetchedQuotesFragment(currentTab, true)
-                manager.beginTransaction().replace(R.id.quoteBody, multiQuoteFragment).commit()
-                viewType=="multi"
-                this.quote=null
-            }
-            else{
-                multiQuoteFragment.toggleView("grid")
-            }
-        }
+
         return super.onOptionsItemSelected(item)
     }
 

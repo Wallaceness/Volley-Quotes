@@ -44,12 +44,10 @@ class SingleQuoteFragment(var quote:Quote?=null) : Fragment() {
     }
 
     fun setBinding(quote:Quote?){
-        //animation for fading in
-        val fadeIn = AlphaAnimation(0f, 1f)
-        fadeIn.duration = 1000
         databinder?.quote = quote
         if (quote!=null){
-            databinder?.root?.startAnimation(fadeIn)
+            //animation happens here
+            (activity as MainActivity).animateQuote(databinder?.root)
         }
         databinder?.root?.alpha = 1f
     }

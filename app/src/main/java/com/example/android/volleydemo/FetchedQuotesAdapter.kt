@@ -20,10 +20,8 @@ class FetchedQuotesAdapter(var fetchedQuotes:ArrayList<Quote>, var parent:Fetche
         lateinit var saveButton:ImageButton
 
         fun bind(quote:Quote, parent:FetchedQuotesFragment) {
-            val fadeIn = AlphaAnimation(0f, 1f)
-            fadeIn.duration = 1000
             binder.quote= quote
-            binder.root.startAnimation(fadeIn)
+            (parent.activity as MainActivity).animateQuote(binder.root)
             binder.executePendingBindings()
             saveButton = binder.root.findViewById(R.id.saveBtn)
             val shareButton = binder.root.findViewById<ImageButton>(R.id.shareBtn)
