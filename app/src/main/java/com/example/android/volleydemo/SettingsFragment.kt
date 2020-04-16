@@ -2,6 +2,7 @@ package com.example.android.volleydemo
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -40,6 +41,9 @@ class SettingsFragment : Fragment(), AlertLaunchedListener {
         val rootView= inflater.inflate(R.layout.fragment_settings, container, false)
         SettingsVM = QuoteViewModel(requireActivity().application)
         animationsRadio = rootView.findViewById(R.id.animationOptions)
+        if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE){
+            animationsRadio.orientation = RadioGroup.HORIZONTAL
+        }
 
         val wm = WorkManager.getInstance(requireContext())
         val future: ListenableFuture<List<WorkInfo>> = wm.getWorkInfosByTag("QuoteAlert")

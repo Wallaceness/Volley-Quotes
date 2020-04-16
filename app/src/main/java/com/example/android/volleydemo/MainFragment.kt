@@ -6,6 +6,9 @@ import android.content.res.Configuration
 import android.net.Uri
 import android.os.Bundle
 import android.view.*
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.Spinner
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
@@ -85,7 +88,9 @@ class MainFragment : Fragment() {
             }
             singleQuoteFragment = SingleQuoteFragment(this.quote)
             multiQuoteFragment = FetchedQuotesFragment(currentTab)
-            manager.beginTransaction().add(R.id.controlPanel, RandomFragment()).commit()
+            if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT){
+                manager.beginTransaction().add(R.id.controlPanel, RandomFragment()).commit()
+            }
         }
 
         when(currentTab){
@@ -210,12 +215,66 @@ class MainFragment : Fragment() {
         }
         else{
             inflater.inflate(R.menu.action_menu_landscape, menu)
+//            set up spinner
+            val spinner = menu.findItem(R.id.toolbarSpinner).actionView as Spinner
+            val adapter = ArrayAdapter.createFromResource(
+                requireContext(),
+                R.array.categories_array, android.R.layout.simple_spinner_item
+            )
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            spinner.adapter = adapter
+            spinner.onItemSelectedListener = object:AdapterView.OnItemSelectedListener{
+                override fun onNothingSelected(parent: AdapterView<*>?) {
+
+                }
+
+                override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: View?,
+                    position: Int,
+                    id: Long
+                ) {
+                    when(parent?.getItemAtPosition(position) as String){
+                        "Random"-> {
+                            currentTab = "random"
+                            manager.beginTransaction().remove(authorFragment).commit()
+                            authorContainer.visibility=View.GONE
+                            multiQuoteFragment.resetType("random")
+                            RandomFragment()
+                        }
+                        "By Keyword" ->{
+                            currentTab = "keyword"
+                            manager.beginTransaction().remove(authorFragment).commit()
+                            authorContainer.visibility=View.GONE
+                            multiQuoteFragment.resetType("keyword")
+                            SearchFragment()
+                        }
+                        "By Author" ->{
+                            currentTab = "author"
+                            manager.beginTransaction().replace(R.id.authorInfo, authorFragment).commit()
+                            multiQuoteFragment.resetType("author")
+                            SearchFragment()
+                        }
+                    }
+                    quote = null
+                    if (viewType == "single"){
+                        singleQuoteFragment.setBinding(null)
+                        manager.beginTransaction().replace(R.id.quoteBody, singleQuoteFragment).commit()
+                    }
+                    else if (viewType == "multi"){
+                        multiQuoteFragment = FetchedQuotesFragment(currentTab)
+                        manager.beginTransaction().replace(R.id.quoteBody, multiQuoteFragment).commit()
+                    }
+                    searchValue = null
+            } }
+
+
+//            set up searchbar
             val searcher = SearchView((context as MainActivity).supportActionBar?.themedContext ?: context)
             menu.findItem(R.id.searchBar).apply{
                 setShowAsAction(MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW or MenuItem.SHOW_AS_ACTION_IF_ROOM)
                 actionView = searcher
             }
-
             searcher.setOnQueryTextListener(object: SearchView.OnQueryTextListener{
                 override fun onQueryTextSubmit(query: String?): Boolean {
                     if (query!=null){
@@ -267,36 +326,7 @@ class MainFragment : Fragment() {
                     multiQuoteFragment.toggleView("grid")
                 }
             }
-            R.id.randomItem->{
-                currentTab = "random"
-                manager.beginTransaction().remove(authorFragment).commit()
-                authorContainer.visibility=View.GONE
-                multiQuoteFragment.resetType("random")
             }
-            R.id.keywordItem->{
-                currentTab = "keyword"
-                manager.beginTransaction().remove(authorFragment).commit()
-                authorContainer.visibility=View.GONE
-                multiQuoteFragment.resetType("keyword")
-            }
-            R.id.authorItem->{
-                currentTab = "author"
-                manager.beginTransaction().replace(R.id.authorInfo, authorFragment).commit()
-                multiQuoteFragment.resetType("author")
-            }
-            }
-        if (id==R.id.keywordItem || id==R.id.authorItem || id==R.id.randomItem){
-            quote = null
-            if (viewType == "single"){
-                singleQuoteFragment.setBinding(null)
-                manager.beginTransaction().replace(R.id.quoteBody, singleQuoteFragment).commit()
-            }
-            else if (viewType == "multi"){
-                multiQuoteFragment = FetchedQuotesFragment(currentTab)
-                manager.beginTransaction().replace(R.id.quoteBody, multiQuoteFragment).commit()
-            }
-            searchValue = null
-        }
 
         return super.onOptionsItemSelected(item)
     }
