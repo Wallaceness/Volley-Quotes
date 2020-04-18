@@ -1,30 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <TextView
         android:id="@+id/typeView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/keywordOrAuthorView"
+        android:gravity="center_vertical"
         />
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:id="@+id/keywordOrAuthorView" />
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:id="@+id/keywordOrAuthorView"
+        android:gravity="center_vertical"
+        app:layout_constraintStart_toEndOf="@id/typeView"
+        app:layout_constraintEnd_toStartOf="@id/frequencyView"/>
     <TextView
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:id="@+id/frequencyView"
+        app:layout_constraintStart_toEndOf="@id/keywordOrAuthorView"
+        app:layout_constraintEnd_toStartOf="@id/alertGuide"
+        android:gravity="center_vertical"/>
+    <androidx.constraintlayout.widget.Guideline
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:id="@+id/frequencyView" />
+        android:id="@+id/alertGuide"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent=".9" />
     <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
         android:id="@+id/deleteButton"
-        android:background="@drawable/ic_close_black_40dp" />
+        android:background="@drawable/ic_close_black_40dp"
+        app:layout_constraintStart_toEndOf="@id/alertGuide"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

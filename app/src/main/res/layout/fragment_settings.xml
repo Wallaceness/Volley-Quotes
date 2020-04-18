@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SettingsFragment">
+    tools:context=".SettingsFragment"
+    android:padding="10dp">
 
     <TextView
         android:id="@+id/animationSection"
@@ -15,42 +16,55 @@
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/animationOptions"
+        app:layout_constraintBottom_toTopOf="@id/animationScroll"
         tools:layout_editor_absoluteX="149dp" />
 
-    <RadioGroup
+    <ScrollView
+        android:id="@+id/animationScroll"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/animationOptions"
         app:layout_constraintTop_toBottomOf="@id/animationSection"
         app:layout_constraintBottom_toTopOf="@+id/alertSection"
-        android:orientation="vertical">
-        <RadioButton android:id="@+id/noneOption"
-            android:layout_width="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp">
+        <RadioGroup
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/none"/>
-        <RadioButton android:id="@+id/fadeOption"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/fade_in" />
-        <RadioButton android:id="@+id/slideTopOption"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/slide_top" />
-        <RadioButton android:id="@+id/slideBottomOption"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/slide_bottom" />
-        <RadioButton android:id="@+id/slideLeftOption"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/slide_left" />
-        <RadioButton android:id="@+id/slideRightOption"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/slide_right" />
+            android:id="@+id/animationOptions"
+            android:orientation="vertical">
+            <RadioButton android:id="@+id/noneOption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/none"
+                android:layout_marginEnd="20dp"/>
+            <RadioButton android:id="@+id/fadeOption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/fade_in"
+                android:layout_marginEnd="20dp"/>
+            <RadioButton android:id="@+id/slideTopOption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/slide_top"
+                android:layout_marginEnd="20dp"/>
+            <RadioButton android:id="@+id/slideBottomOption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/slide_bottom"
+                android:layout_marginEnd="20dp"/>
+            <RadioButton android:id="@+id/slideLeftOption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/slide_left"
+                android:layout_marginEnd="20dp"/>
+            <RadioButton android:id="@+id/slideRightOption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/slide_right"
+                android:layout_marginEnd="20dp"/>
 
-    </RadioGroup>
+        </RadioGroup>
+    </ScrollView>
 
     <TextView
         android:id="@+id/alertSection"
@@ -60,16 +74,20 @@
         android:text="@string/alerts"
         android:textSize="20sp"
         android:textStyle="bold"
-        app:layout_constraintTop_toBottomOf="@id/animationOptions"
+        app:layout_constraintTop_toBottomOf="@id/animationScroll"
         app:layout_constraintBottom_toTopOf="@id/typeHeader"
         tools:layout_editor_absoluteX="149dp"
-        tools:layout_editor_absoluteY="356dp" />
+        tools:layout_editor_absoluteY="356dp"
+        android:layout_marginBottom="20dp"
+        app:layout_goneMarginBottom="20dp"
+        />
 
     
             <TextView android:layout_height="wrap_content"
                 android:layout_width="0dp"
                 android:text="@string/type"
                 android:id="@+id/typeHeader"
+                android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/keywordAuthorHeader"
                 app:layout_constraintTop_toBottomOf="@id/alertSection"
@@ -78,6 +96,7 @@
                 android:layout_width="0dp"
                 android:text="@string/keyword_author"
                 android:id="@+id/keywordAuthorHeader"
+                android:textStyle="bold"
                 app:layout_constraintStart_toEndOf="@id/typeHeader"
                 app:layout_constraintEnd_toStartOf="@id/frequencyHeader"
                 app:layout_constraintTop_toBottomOf="@id/alertSection"
@@ -86,15 +105,23 @@
                 android:layout_width="0dp"
                 android:text="@string/frequency"
                 android:id="@+id/frequencyHeader"
+                android:textStyle="bold"
                 app:layout_constraintStart_toEndOf="@id/keywordAuthorHeader"
-                app:layout_constraintEnd_toStartOf="@id/deleteColumnHeader"
+                app:layout_constraintEnd_toStartOf="@id/verticalGuide"
                 app:layout_constraintTop_toBottomOf="@id/alertSection"
-                app:layout_constraintBottom_toTopOf="@id/alertTable"/>
+                app:layout_constraintBottom_toTopOf="@id/alertTable" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/verticalGuide"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent=".9" />
     <TextView
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:id="@+id/deleteColumnHeader"
-        app:layout_constraintStart_toEndOf="@id/frequencyHeader"
+        app:layout_constraintStart_toEndOf="@id/verticalGuide"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/alertSection"
         app:layout_constraintBottom_toTopOf="@id/alertTable"
@@ -102,15 +129,17 @@
     
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="0dp"
         android:id="@+id/alertTable"
         app:layout_constraintBottom_toTopOf="@id/bottomSection"
-        app:layout_constraintTop_toBottomOf="@id/keywordAuthorHeader"/>
+        app:layout_constraintTop_toBottomOf="@id/keywordAuthorHeader"
+        android:minHeight="50dp"
+        />
     
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="50dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/alertTable"
         android:id="@+id/bottomSection">
@@ -121,7 +150,7 @@
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:background="@drawable/ic_add_24dp"/>
+            android:background="@drawable/ic_add_40dp"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

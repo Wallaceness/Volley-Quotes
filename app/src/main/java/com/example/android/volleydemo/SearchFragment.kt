@@ -35,7 +35,6 @@ class SearchFragment constructor(var searchField:String="") : Fragment() {
             } else if (type == "keyword") {
                 mvm?.fetchByKeyword(searchValue)
             }
-            (parentFragment as MainFragment).newSearchValue(searchValue)
         }
 
         textarea.addTextChangedListener(object:TextWatcher{

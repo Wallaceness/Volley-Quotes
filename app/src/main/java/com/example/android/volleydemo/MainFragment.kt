@@ -289,6 +289,9 @@ class MainFragment : Fragment() {
 
             }
                     initial = false
+                    if (currentTab=="random"){
+                        searcher.visibility = View.INVISIBLE
+                    }
                 } }
             //set values on spinner and setter from previous orientation
 
@@ -309,6 +312,7 @@ class MainFragment : Fragment() {
                 }
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+
                 }
 
             })

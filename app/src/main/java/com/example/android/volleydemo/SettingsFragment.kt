@@ -43,6 +43,7 @@ class SettingsFragment : Fragment(), AlertLaunchedListener {
         animationsRadio = rootView.findViewById(R.id.animationOptions)
         if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE){
             animationsRadio.orientation = RadioGroup.HORIZONTAL
+//            animationsRadio.gravity = View.TEXT_ALIGNMENT_CENTER
         }
 
         val wm = WorkManager.getInstance(requireContext())
