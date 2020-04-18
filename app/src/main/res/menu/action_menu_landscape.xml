@@ -3,9 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item android:id="@+id/searchBar"
         android:title="@string/search_here"
-        android:icon="@drawable/ic_search_black_24dp"
         app:showAsAction="always"
-        app:actionViewClass="android.widget.SearchView" />
+        app:actionViewClass="android.widget.EditText"
+        app:contentInsetRight="20dp"/>
+    <item android:id="@+id/toolbarButton"
+        app:showAsAction="always"
+        android:title="@string/search"
+        android:icon="@drawable/ic_search_black_24dp" />
     <item android:id="@+id/toolbarSpinner"
         android:title="@string/categories"
         app:showAsAction="always"

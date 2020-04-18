@@ -5,17 +5,14 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.net.Uri
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.*
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.Spinner
-import android.widget.Toast
-import androidx.appcompat.widget.SearchView
+import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import com.android.volley.VolleyError
-import com.example.android.volleydemo.View.MainActivity
 import com.example.android.volleydemo.ViewModel.QuoteViewModel
 import com.google.android.material.tabs.TabLayout
 import org.json.JSONObject
@@ -40,6 +37,7 @@ class MainFragment : Fragment() {
     var searchValue:String?=null
     lateinit var manager:FragmentManager
     lateinit var authorContainer:View
+    lateinit var searcher: EditText
 
 
     override fun onCreateView(
@@ -80,6 +78,7 @@ class MainFragment : Fragment() {
                 }
             }
         }
+        //settings if this is the first time loading fragment
         else{
             val intent: Intent? = activity?.getIntent()
             val intentQuote:Quote? = intent?.getParcelableExtra("notification_quote")
@@ -88,8 +87,15 @@ class MainFragment : Fragment() {
             }
             singleQuoteFragment = SingleQuoteFragment(this.quote)
             multiQuoteFragment = FetchedQuotesFragment(currentTab)
-            if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT){
-                manager.beginTransaction().add(R.id.controlPanel, RandomFragment()).commit()
+        }
+
+        if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT){
+            if (currentTab == "random") {
+                manager.beginTransaction().replace(R.id.controlPanel, RandomFragment()).commit()
+            }
+            else{
+                val searchFragment = SearchFragment(searchValue?:"")
+                manager.beginTransaction().replace(R.id.controlPanel, searchFragment).commit()
             }
         }
 
@@ -100,7 +106,6 @@ class MainFragment : Fragment() {
         }
 
         if (viewType == "single"){
-            singleQuoteFragment.setBinding(null)
             manager.beginTransaction().replace(R.id.quoteBody, singleQuoteFragment).commit()
         }
         else if (viewType == "multi"){
@@ -214,15 +219,24 @@ class MainFragment : Fragment() {
             inflater.inflate(R.menu.action_menu, menu)
         }
         else{
+            var initial:Boolean = true
             inflater.inflate(R.menu.action_menu_landscape, menu)
 //            set up spinner
             val spinner = menu.findItem(R.id.toolbarSpinner).actionView as Spinner
+            searcher = menu.findItem(R.id.searchBar).actionView as EditText
+            searcher.width=300
             val adapter = ArrayAdapter.createFromResource(
                 requireContext(),
                 R.array.categories_array, android.R.layout.simple_spinner_item
             )
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             spinner.adapter = adapter
+            spinner.setSelection(when(currentTab){
+                "random"->0
+                "keyword"->1
+                "author"->2
+                else-> 0
+            })
             spinner.onItemSelectedListener = object:AdapterView.OnItemSelectedListener{
                 override fun onNothingSelected(parent: AdapterView<*>?) {
 
@@ -234,8 +248,10 @@ class MainFragment : Fragment() {
                     position: Int,
                     id: Long
                 ) {
+                    if (!initial){
                     when(parent?.getItemAtPosition(position) as String){
                         "Random"-> {
+                            searcher.visibility = View.INVISIBLE
                             currentTab = "random"
                             manager.beginTransaction().remove(authorFragment).commit()
                             authorContainer.visibility=View.GONE
@@ -243,6 +259,7 @@ class MainFragment : Fragment() {
                             RandomFragment()
                         }
                         "By Keyword" ->{
+                            searcher.visibility = View.VISIBLE
                             currentTab = "keyword"
                             manager.beginTransaction().remove(authorFragment).commit()
                             authorContainer.visibility=View.GONE
@@ -250,6 +267,7 @@ class MainFragment : Fragment() {
                             SearchFragment()
                         }
                         "By Author" ->{
+                            searcher.visibility = View.VISIBLE
                             currentTab = "author"
                             manager.beginTransaction().replace(R.id.authorInfo, authorFragment).commit()
                             multiQuoteFragment.resetType("author")
@@ -266,30 +284,31 @@ class MainFragment : Fragment() {
                         manager.beginTransaction().replace(R.id.quoteBody, multiQuoteFragment).commit()
                     }
                     searchValue = null
-            } }
 
+                    searcher.text = null
 
-//            set up searchbar
-            val searcher = SearchView((context as MainActivity).supportActionBar?.themedContext ?: context)
-            menu.findItem(R.id.searchBar).apply{
-                setShowAsAction(MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW or MenuItem.SHOW_AS_ACTION_IF_ROOM)
-                actionView = searcher
             }
-            searcher.setOnQueryTextListener(object: SearchView.OnQueryTextListener{
-                override fun onQueryTextSubmit(query: String?): Boolean {
-                    if (query!=null){
-                        searchValue=query
-                        when(currentTab){
-                            "author"-> quoteVM?.fetchByAuthor(query)
-                            "keyword"->quoteVM?.fetchByKeyword(query)
-                            "random"->quoteVM?.fetchRandom()
-                        }
-                    }
-                    return true
+                    initial = false
+                } }
+            //set values on spinner and setter from previous orientation
+
+            //initialize searchbar
+            if (searchValue!=null) searcher.setText(searchValue)
+
+            searcher.addTextChangedListener(object:TextWatcher{
+                override fun afterTextChanged(s: Editable?) {
+                    searchValue = s?.toString()
                 }
 
-                override fun onQueryTextChange(newText: String?): Boolean {
-                    return true
+                override fun beforeTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    count: Int,
+                    after: Int
+                ) {
+                }
+
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 }
 
             })
@@ -324,6 +343,26 @@ class MainFragment : Fragment() {
                 }
                 else{
                     multiQuoteFragment.toggleView("grid")
+                }
+            }
+            R.id.toolbarButton ->{
+                val term = searcher.text.toString()
+                when(currentTab){
+                    "random"->{
+                        quoteVM?.fetchRandom()
+                    }
+                    "author"->{
+                        if (term!=""){
+                            searchValue = term
+                            quoteVM?.fetchByAuthor(searchValue!!)
+                        }
+                    }
+                    "keyword"->{
+                        if (term!=""){
+                            searchValue = term
+                            quoteVM?.fetchByKeyword(searchValue!!)
+                        }
+                    }
                 }
             }
             }

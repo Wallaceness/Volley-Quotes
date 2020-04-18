@@ -55,17 +55,19 @@ class QuoteViewModel(@NonNull application: Application) : AndroidViewModel(Appli
     }
 
     fun fetchByKeyword(term: String, succListener:Response.Listener<JSONObject> = successListener, errListener:Response.ErrorListener = errorListener) {
-        var term = term.substring(0, 1).toUpperCase()+term.substring(1)
-        val url = "${base}keyword/${term}"
-        val request = object : JsonObjectRequest(url, null, succListener, errListener) {
+        if (term!="") {
+            var term = term.substring(0, 1).toUpperCase() + term.substring(1)
+            val url = "${base}keyword/${term}"
+            val request = object : JsonObjectRequest(url, null, succListener, errListener) {
 
-            override fun getHeaders(): MutableMap<String, String> =
-                hashMapOf<String, String>().apply {
-                    put("x-rapidapi-host", Secrets.ApiHost)
-                    put("x-rapidapi-key", Secrets.ApiKey)
-                }
+                override fun getHeaders(): MutableMap<String, String> =
+                    hashMapOf<String, String>().apply {
+                        put("x-rapidapi-host", Secrets.ApiHost)
+                        put("x-rapidapi-key", Secrets.ApiKey)
+                    }
+            }
+            requestQueue?.add(request)
         }
-        requestQueue?.add(request)
     }
 
     fun fetchRandom(succListener:Response.Listener<JSONObject> = successListener, errListener:Response.ErrorListener = errorListener) {
@@ -82,19 +84,22 @@ class QuoteViewModel(@NonNull application: Application) : AndroidViewModel(Appli
     }
 
     fun fetchByAuthor(author: String, succListener:Response.Listener<JSONObject> = successListener, errListener:Response.ErrorListener = errorListener) {
-        var term = author.split(" ")
-        term = term.map {it.substring(0, 1).toUpperCase()+it.substring(1)}
-       var result = term.joinToString(separator = " ")
-        val request = object: JsonObjectRequest(Request.Method.GET, base + "author/" + result, null,
-            succListener, errListener
-        ){
-            override fun getHeaders(): MutableMap<String, String> =
-                hashMapOf<String, String>().apply {
-                    put("x-rapidapi-host", Secrets.ApiHost)
-                    put("x-rapidapi-key", Secrets.ApiKey)
-                }
+        if (author != "") {
+            var term = author.split(" ")
+            term = term.map { it.substring(0, 1).toUpperCase() + it.substring(1) }
+            var result = term.joinToString(separator = " ")
+            val request = object : JsonObjectRequest(
+                Request.Method.GET, base + "author/" + result, null,
+                succListener, errListener
+            ) {
+                override fun getHeaders(): MutableMap<String, String> =
+                    hashMapOf<String, String>().apply {
+                        put("x-rapidapi-host", Secrets.ApiHost)
+                        put("x-rapidapi-key", Secrets.ApiKey)
+                    }
+            }
+            requestQueue!!.add(request)
         }
-        requestQueue!!.add(request)
     }
 
     fun getQuote(): LiveData<JSONObject>{
