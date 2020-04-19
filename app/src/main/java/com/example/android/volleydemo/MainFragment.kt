@@ -189,6 +189,9 @@ class MainFragment : Fragment() {
 
     fun newSearchValue(term:String){
         searchValue = term
+    }
+
+    fun startMulti(){
         if (viewType == "multi"){
             multiQuoteFragment.startFetching()
         }

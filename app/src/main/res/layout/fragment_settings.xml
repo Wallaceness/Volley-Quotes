@@ -25,8 +25,8 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/animationSection"
         app:layout_constraintBottom_toTopOf="@+id/alertSection"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="20dp">
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp">
         <RadioGroup
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -75,11 +75,10 @@
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintTop_toBottomOf="@id/animationScroll"
-        app:layout_constraintBottom_toTopOf="@id/typeHeader"
+        app:layout_constraintBottom_toTopOf="@id/keywordAuthorHeader"
         tools:layout_editor_absoluteX="149dp"
         tools:layout_editor_absoluteY="356dp"
-        android:layout_marginBottom="20dp"
-        app:layout_goneMarginBottom="20dp"
+        android:layout_marginBottom="10dp"
         />
 
     

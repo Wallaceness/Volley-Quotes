@@ -30,10 +30,16 @@ class SearchFragment constructor(var searchField:String="") : Fragment() {
         searchBtn.setOnClickListener { v: View ->
             val searchValue = textarea.text.toString()
             val type = (parentFragment as MainFragment).currentTab
-            if (type == "author") {
-                mvm?.fetchByAuthor(searchValue)
-            } else if (type == "keyword") {
-                mvm?.fetchByKeyword(searchValue)
+            val viewType=(parentFragment as MainFragment).viewType
+            if (viewType=="single"){
+                if (type == "author") {
+                    mvm?.fetchByAuthor(searchValue)
+                } else if (type == "keyword") {
+                    mvm?.fetchByKeyword(searchValue)
+                }
+            }
+            else{
+                (parentFragment as MainFragment).startMulti()
             }
         }
 
