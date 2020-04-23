@@ -5,7 +5,9 @@ import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import java.security.MessageDigest
+import java.lang.Integer.parseInt
+import java.text.SimpleDateFormat
+import java.util.*
 
 @Entity(tableName="quotes_table")
 class Quote(@PrimaryKey @field:ColumnInfo(name = "message") val message:String,
@@ -37,6 +39,27 @@ class Quote(@PrimaryKey @field:ColumnInfo(name = "message") val message:String,
             else string+=" - Present"
         }
         return string
+    }
+
+    fun formatDate(date:String):String{
+        if (date!="null") {
+            val months = hashMapOf<String, String>()
+            months["Jan"] = "January"
+            months["Feb"] = "February"
+            months["Mar"] = "March"
+            months["Apr"] = "April"
+            months["May"] = "May"
+            months["Jun"] = "June"
+            months["Jul"] = "July"
+            months["Aug"] = "August"
+            months["Sep"] = "September"
+            months["Oct"] = "October"
+            months["Nov"] = "November"
+            months["Dec"] = "December"
+            val parse = date.split("-")
+            return "${months[parse[1]] ?: ""} ${parseInt(parse[0])} ${parse[2]}"
+        }
+        else return ""
     }
 
     override fun writeToParcel(dest: Parcel?, flags: Int) {

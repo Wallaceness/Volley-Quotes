@@ -87,7 +87,7 @@ class QuoteViewModel(@NonNull application: Application) : AndroidViewModel(Appli
         if (author != "") {
             var term = author.split(" ")
             term = term.map { it.substring(0, 1).toUpperCase() + it.substring(1) }
-            var result = term.joinToString(separator = " ")
+            var result = term.joinToString(separator = "%20")
             val request = object : JsonObjectRequest(
                 Request.Method.GET, base + "author/" + result, null,
                 succListener, errListener

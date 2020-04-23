@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">VolleyDemo</string>
+    <string name="app_name">Famous Quotes</string>
 
     <string name="author">-%1$s, %2$s - %3$s</string>
     <string name="search">Search</string>
