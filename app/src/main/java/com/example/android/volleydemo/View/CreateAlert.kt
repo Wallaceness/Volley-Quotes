@@ -1,17 +1,15 @@
-package com.example.android.volleydemo
+package com.example.android.volleydemo.View
 
 import android.app.AlertDialog
 import android.app.Dialog
 import android.content.DialogInterface
 import android.os.Bundle
-import android.view.MenuItem
 import android.view.View
 import android.widget.*
 import androidx.fragment.app.DialogFragment
 import com.android.volley.Response
-import kotlinx.coroutines.Deferred
+import com.example.android.volleydemo.R
 import org.json.JSONObject
-import java.time.Duration
 
 class CreateAlert: DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -28,7 +26,8 @@ class CreateAlert: DialogFragment() {
         textField = rootView.findViewById(R.id.keywordOrAuthor)
         authorOrKeywordLabel = rootView.findViewById(R.id.keywordOrAuthorLabel)
         typeSpinner = rootView.findViewById(R.id.alertSpinner)
-        typeSpinner.adapter = ArrayAdapter.createFromResource(requireContext(), R.array.types_array, android.R.layout.simple_spinner_item).also{adapter->
+        typeSpinner.adapter = ArrayAdapter.createFromResource(requireContext(),
+            R.array.types_array, android.R.layout.simple_spinner_item).also{ adapter->
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         }
 
@@ -59,7 +58,8 @@ class CreateAlert: DialogFragment() {
         }
 
         timeSpinner = rootView.findViewById(R.id.frequencySpinner)
-        timeSpinner.adapter=ArrayAdapter.createFromResource(requireContext(), R.array.frequency_array, android.R.layout.simple_spinner_dropdown_item)
+        timeSpinner.adapter=ArrayAdapter.createFromResource(requireContext(),
+            R.array.frequency_array, android.R.layout.simple_spinner_dropdown_item)
 
         timeSpinner.onItemSelectedListener = object:AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -89,7 +89,7 @@ class CreateAlert: DialogFragment() {
         builder.setView(rootView)
             .setTitle("New Quote Alert")
             .setPositiveButton(R.string.create_alert, null)
-            .setNegativeButton(R.string.cancel, DialogInterface.OnClickListener{dialog, id ->
+            .setNegativeButton(R.string.cancel, DialogInterface.OnClickListener{ dialog, id ->
                 getDialog()?.cancel()
             })
         val Adialog = builder.create()

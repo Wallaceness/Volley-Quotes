@@ -1,15 +1,14 @@
-package com.example.android.volleydemo
+package com.example.android.volleydemo.View
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.fragment.app.findFragment
 import androidx.recyclerview.widget.RecyclerView
 import androidx.work.WorkInfo
-import androidx.work.WorkManager
+import com.example.android.volleydemo.R
 
 class AlertsAdapter(list:ArrayList<WorkInfo>):RecyclerView.Adapter<AlertsAdapter.AlertHolder>() {
     var alertsList:ArrayList<WorkInfo> = list

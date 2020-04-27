@@ -1,4 +1,4 @@
-package com.example.android.volleydemo
+package com.example.android.volleydemo.View
 
 import android.os.Bundle
 import android.text.Editable
@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import com.example.android.volleydemo.R
 
 /**
  * A simple [Fragment] subclass.

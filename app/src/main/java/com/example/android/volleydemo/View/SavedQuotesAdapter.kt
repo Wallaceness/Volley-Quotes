@@ -1,16 +1,14 @@
-package com.example.android.volleydemo
+package com.example.android.volleydemo.View
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.example.android.volleydemo.View.MainActivity
-import com.example.android.volleydemo.ViewModel.QuoteViewModel
+import com.example.android.volleydemo.model.Quote
+import com.example.android.volleydemo.R
 import com.example.android.volleydemo.databinding.QuoteItemBinding
-import kotlin.jvm.internal.CallableReference
 
 class SavedQuotesAdapter constructor(savedQuotes: ArrayList<Quote>, context: SavedQuotesFragment): RecyclerView.Adapter<SavedQuotesAdapter.SavedQuoteHolder> () {
     var savedQuotes: ArrayList<Quote>
@@ -22,8 +20,11 @@ class SavedQuotesAdapter constructor(savedQuotes: ArrayList<Quote>, context: Sav
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SavedQuoteHolder {
         var inflater: LayoutInflater = LayoutInflater.from(parent.context)
-        val holderBinding:QuoteItemBinding = DataBindingUtil.inflate(inflater, R.layout.quote_item, parent, false)
-        return SavedQuoteHolder(holderBinding)
+        val holderBinding:QuoteItemBinding = DataBindingUtil.inflate(inflater,
+            R.layout.quote_item, parent, false)
+        return SavedQuoteHolder(
+            holderBinding
+        )
     }
 
     override fun getItemCount(): Int {
@@ -31,7 +32,7 @@ class SavedQuotesAdapter constructor(savedQuotes: ArrayList<Quote>, context: Sav
     }
 
     override fun onBindViewHolder(holder: SavedQuoteHolder, position: Int) {
-        val item:Quote = savedQuotes.get(position)
+        val item: Quote = savedQuotes.get(position)
         holder.bind(item, parentContext)
     }
 
@@ -41,7 +42,7 @@ class SavedQuotesAdapter constructor(savedQuotes: ArrayList<Quote>, context: Sav
     }
 
     class SavedQuoteHolder(quoteBinding: QuoteItemBinding) : RecyclerView.ViewHolder(quoteBinding.root) {
-        var quote:Quote?=null
+        var quote: Quote?=null
         var binder:QuoteItemBinding
         lateinit var deleteButton:ImageButton
 
@@ -50,7 +51,7 @@ class SavedQuotesAdapter constructor(savedQuotes: ArrayList<Quote>, context: Sav
              binder.saved = true
         }
 
-        fun bind(quote:Quote, context:SavedQuotesFragment) {
+        fun bind(quote: Quote, context: SavedQuotesFragment) {
             binder.quote= quote
             (context.activity as MainActivity).animateQuote(binder.root)
             binder.executePendingBindings()

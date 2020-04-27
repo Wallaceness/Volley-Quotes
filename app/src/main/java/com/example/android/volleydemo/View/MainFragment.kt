@@ -1,4 +1,4 @@
-package com.example.android.volleydemo
+package com.example.android.volleydemo.View
 
 import android.content.Context
 import android.content.Intent
@@ -13,7 +13,9 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import com.android.volley.VolleyError
+import com.example.android.volleydemo.*
 import com.example.android.volleydemo.ViewModel.QuoteViewModel
+import com.example.android.volleydemo.model.Quote
 import com.google.android.material.tabs.TabLayout
 import org.json.JSONObject
 
@@ -30,9 +32,9 @@ class MainFragment : Fragment() {
     var quote: Quote?=null
     var tabs:TabLayout?=null
     var currentTab:String = "random"
-    lateinit var singleQuoteFragment:SingleQuoteFragment
-    lateinit var multiQuoteFragment:FetchedQuotesFragment
-    lateinit var authorFragment:AuthorInfoFragment
+    lateinit var singleQuoteFragment: SingleQuoteFragment
+    lateinit var multiQuoteFragment: FetchedQuotesFragment
+    lateinit var authorFragment: AuthorInfoFragment
     var viewType = "single"
     var searchValue:String?=null
     lateinit var manager:FragmentManager
@@ -48,6 +50,7 @@ class MainFragment : Fragment() {
         QuoteViewModel.VolleyQueue.init(requireActivity().applicationContext)
         val rootView:View = inflater.inflate(R.layout.fragment_main, container, false)
         quoteVM = QuoteViewModel(requireActivity().application)
+        (requireActivity() as MainActivity).showBottomNav()
         //initialize tabs only if in portrait view
         if (resources.configuration.orientation ==Configuration.ORIENTATION_PORTRAIT){
             tabs = rootView.findViewById(R.id.tabLayout)
@@ -64,12 +67,17 @@ class MainFragment : Fragment() {
             viewType = savedInstanceState.getString("view_type") as String
             searchValue = savedInstanceState.getString("search_term")
             if (viewType == "single"){
-                singleQuoteFragment = SingleQuoteFragment(this.quote)
-                multiQuoteFragment = FetchedQuotesFragment(currentTab)
+                singleQuoteFragment =
+                    SingleQuoteFragment(this.quote)
+                multiQuoteFragment =
+                    FetchedQuotesFragment(
+                        currentTab
+                    )
             }
             else if (viewType == "multi"){
                 multiQuoteFragment = manager.findFragmentById(R.id.quoteBody) as FetchedQuotesFragment
-                singleQuoteFragment = SingleQuoteFragment()
+                singleQuoteFragment =
+                    SingleQuoteFragment()
             }
             if (currentTab == "author"){
                 authorFragment=manager.findFragmentById(R.id.authorInfo) as AuthorInfoFragment
@@ -81,20 +89,30 @@ class MainFragment : Fragment() {
         //settings if this is the first time loading fragment
         else{
             val intent: Intent? = activity?.getIntent()
-            val intentQuote:Quote? = intent?.getParcelableExtra("notification_quote")
+            val intentQuote: Quote? = intent?.getParcelableExtra("notification_quote")
             if (intentQuote!=null ){
                 this.quote = intentQuote
             }
-            singleQuoteFragment = SingleQuoteFragment(this.quote)
-            multiQuoteFragment = FetchedQuotesFragment(currentTab)
+            singleQuoteFragment =
+                SingleQuoteFragment(this.quote)
+            multiQuoteFragment =
+                FetchedQuotesFragment(
+                    currentTab
+                )
         }
 
         if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT){
             if (currentTab == "random") {
-                manager.beginTransaction().replace(R.id.controlPanel, RandomFragment()).commit()
+                manager.beginTransaction().replace(
+                    R.id.controlPanel,
+                    RandomFragment()
+                ).commit()
             }
             else{
-                val searchFragment = SearchFragment(searchValue?:"")
+                val searchFragment =
+                    SearchFragment(
+                        searchValue ?: ""
+                    )
                 manager.beginTransaction().replace(R.id.controlPanel, searchFragment).commit()
             }
         }
@@ -122,7 +140,8 @@ class MainFragment : Fragment() {
             }
 
             override fun onTabSelected(p0: TabLayout.Tab?) {
-                manager.beginTransaction().replace(R.id.controlPanel, when(p0?.text){
+                manager.beginTransaction().replace(
+                    R.id.controlPanel, when(p0?.text){
                     "Random"-> {
                         currentTab = "random"
                         manager.beginTransaction().remove(authorFragment).commit()
@@ -151,11 +170,14 @@ class MainFragment : Fragment() {
                     manager.beginTransaction().replace(R.id.quoteBody, singleQuoteFragment).commit()
                 }
                 else if (viewType == "multi"){
-                    multiQuoteFragment = FetchedQuotesFragment(currentTab)
+                    multiQuoteFragment =
+                        FetchedQuotesFragment(
+                            currentTab
+                        )
                     manager.beginTransaction().replace(R.id.quoteBody, multiQuoteFragment).commit()
                 }
                 searchValue = null
-
+                (requireActivity() as MainActivity).showBottomNav()
             }
 
         })
@@ -283,12 +305,16 @@ class MainFragment : Fragment() {
                         manager.beginTransaction().replace(R.id.quoteBody, singleQuoteFragment).commit()
                     }
                     else if (viewType == "multi"){
-                        multiQuoteFragment = FetchedQuotesFragment(currentTab)
+                        multiQuoteFragment =
+                            FetchedQuotesFragment(
+                                currentTab
+                            )
                         manager.beginTransaction().replace(R.id.quoteBody, multiQuoteFragment).commit()
                     }
                     searchValue = null
 
                     searcher.text = null
+                    (requireActivity() as MainActivity).showBottomNav()
 
             }
                     initial = false
@@ -325,13 +351,14 @@ class MainFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val id = item.itemId
         when(id){
-            R.id.singleQuote->{
+            R.id.singleQuote ->{
                 if (viewType !="single") {
                     manager.beginTransaction().replace(R.id.quoteBody, singleQuoteFragment).commit()
                     viewType="single"
+                    (requireActivity() as MainActivity).showBottomNav()
                 }
             }
-            R.id.multiQuote->{
+            R.id.multiQuote ->{
                 if (viewType!="multi"){
                     manager.beginTransaction().replace(R.id.quoteBody, multiQuoteFragment).commit()
                     viewType="multi"
@@ -340,10 +367,15 @@ class MainFragment : Fragment() {
                 else{
                     multiQuoteFragment.toggleView("linear")
                 }
+                (requireActivity() as MainActivity).showBottomNav()
             }
-            R.id.gridQuote->{
+            R.id.gridQuote ->{
                 if (viewType!="multi"){
-                    multiQuoteFragment = FetchedQuotesFragment(currentTab, true)
+                    multiQuoteFragment =
+                        FetchedQuotesFragment(
+                            currentTab,
+                            true
+                        )
                     manager.beginTransaction().replace(R.id.quoteBody, multiQuoteFragment).commit()
                     viewType=="multi"
                     this.quote=null
@@ -351,6 +383,7 @@ class MainFragment : Fragment() {
                 else{
                     multiQuoteFragment.toggleView("grid")
                 }
+                (requireActivity() as MainActivity).showBottomNav()
             }
             R.id.toolbarButton ->{
                 val term = searcher.text.toString()
@@ -378,7 +411,7 @@ class MainFragment : Fragment() {
     }
 
 
-    fun showAuthorInfo(quote:Quote?){
+    fun showAuthorInfo(quote: Quote?){
         authorContainer.visibility = View.VISIBLE
         authorFragment.binding?.quote =quote
     }

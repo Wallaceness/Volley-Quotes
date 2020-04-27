@@ -1,4 +1,4 @@
-package com.example.android.volleydemo
+package com.example.android.volleydemo.model
 
 import android.os.Parcel
 import android.os.Parcelable
@@ -6,8 +6,6 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import java.lang.Integer.parseInt
-import java.text.SimpleDateFormat
-import java.util.*
 
 @Entity(tableName="quotes_table")
 class Quote(@PrimaryKey @field:ColumnInfo(name = "message") val message:String,

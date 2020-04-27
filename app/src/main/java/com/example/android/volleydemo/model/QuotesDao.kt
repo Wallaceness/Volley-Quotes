@@ -1,8 +1,7 @@
-package com.example.android.volleydemo.ViewModel
+package com.example.android.volleydemo.model
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import com.example.android.volleydemo.Quote
 
 @Dao()
 interface QuotesDao {
@@ -13,6 +12,6 @@ interface QuotesDao {
     fun getAllQuotes() : LiveData<List<Quote>>
 
     @Delete
-    fun delete(quote:Quote)
+    fun delete(quote: Quote)
 
 }

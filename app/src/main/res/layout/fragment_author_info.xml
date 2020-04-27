@@ -5,14 +5,17 @@
     <data>
         <variable
             name="quote"
-            type="com.example.android.volleydemo.Quote" />
+            type="com.example.android.volleydemo.model.Quote" />
+        <variable name="expanded" type="Boolean" />
+        <import type="android.view.View" alias="View"/>
     </data>
 <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".AuthorInfoFragment"
+    tools:context=".View.AuthorInfoFragment"
     android:paddingStart="10dp"
-    android:paddingEnd="10dp">
+    android:paddingEnd="10dp"
+    android:animateLayoutChanges="true">
 
     <TextView
         android:id="@+id/authorName"
@@ -23,7 +26,16 @@
         app:layout_constraintTop_toTopOf="parent"
         android:textStyle="bold"
         android:textSize="10pt"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
         />
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/collapseButton"
+        android:background="@{expanded?@drawable/ic_keyboard_arrow_up_black_24dp:@drawable/ic_keyboard_arrow_down_black_24dp}"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
     <TextView
         android:id="@+id/authorBirth"
@@ -34,11 +46,12 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/authorGuide"
         app:layout_constraintTop_toBottomOf="@+id/authorName"
-        android:textStyle="bold"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp"
+        android:textStyle="normal"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
         android:textSize="8pt"
-        android:textAlignment="viewStart"/>
+        android:textAlignment="viewStart"
+        android:visibility="@{expanded==true?View.VISIBLE:View.GONE}"/>
 
     <TextView
         android:id="@+id/authorDeath"
@@ -49,36 +62,43 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/authorGuide"
         app:layout_constraintTop_toBottomOf="@+id/authorName"
-        android:textStyle="bold"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp"
-        android:textSize="8pt"/>
+        android:textStyle="normal"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:textSize="8pt"
+        android:visibility="@{expanded==true?View.VISIBLE:View.GONE}"/>
 
     <TextView
         android:id="@+id/nationality"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="@{quote.nationality?quote.nationality:``}"
+        android:text="@{quote.nationality!=`null`?quote.nationality:``}"
         android:textAlignment="viewStart"
         android:textSize="8pt"
-        android:textStyle="bold"
+        android:textStyle="normal"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/authorGuide"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/authorBirth" />
+        app:layout_constraintTop_toBottomOf="@id/authorBirth"
+        android:visibility="@{expanded==true?View.VISIBLE:View.GONE}"/>
 
     <TextView
         android:id="@+id/profession"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="@{quote.profession?quote.profession:``}"
+        android:text="@{quote.profession!=`null`?quote.profession:``}"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/authorGuide"
         app:layout_constraintTop_toBottomOf="@id/authorDeath"
         app:layout_constraintBottom_toBottomOf="parent"
         tools:layout_editor_absoluteY="95dp"
-        android:textStyle="bold"
-        android:textSize="8pt"/>
+        android:textStyle="normal"
+        android:textSize="8pt"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:visibility="@{expanded==true?View.VISIBLE:View.GONE}"/>
 
     <androidx.constraintlayout.widget.Guideline
         android:layout_width="wrap_content"

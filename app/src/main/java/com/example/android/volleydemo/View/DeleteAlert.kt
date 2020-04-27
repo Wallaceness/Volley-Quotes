@@ -1,11 +1,11 @@
-package com.example.android.volleydemo
+package com.example.android.volleydemo.View
 
 import android.app.Dialog
 import android.content.DialogInterface
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
-import androidx.fragment.app.Fragment
+import com.example.android.volleydemo.R
 
 class DeleteAlert constructor(parent: AlertLaunchedListener, var message:String, var obj:Any): DialogFragment() {
     val parent=parent
@@ -14,10 +14,10 @@ class DeleteAlert constructor(parent: AlertLaunchedListener, var message:String,
 
         val builder: AlertDialog.Builder  = AlertDialog.Builder(requireContext());
         builder.setMessage(message)
-            .setPositiveButton(R.string.delete, DialogInterface.OnClickListener {dialog, id ->
+            .setPositiveButton(R.string.delete, DialogInterface.OnClickListener { dialog, id ->
                 parent.delete(obj)
             })
-            .setNegativeButton(R.string.cancel, DialogInterface.OnClickListener {dialog, id ->
+            .setNegativeButton(R.string.cancel, DialogInterface.OnClickListener { dialog, id ->
 
             })
         return builder.create()

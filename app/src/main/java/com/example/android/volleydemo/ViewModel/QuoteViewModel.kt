@@ -13,10 +13,9 @@ import com.android.volley.Response
 import com.android.volley.VolleyError
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
-import com.example.android.volleydemo.Quote
-import com.example.android.volleydemo.SavedQuotesDB
+import com.example.android.volleydemo.model.Quote
+import com.example.android.volleydemo.model.SavedQuotesDB
 import com.example.android.volleydemo.Secrets
-import com.example.android.volleydemo.View.MainActivity
 import org.json.JSONObject
 import java.util.concurrent.TimeUnit
 
@@ -56,7 +55,8 @@ class QuoteViewModel(@NonNull application: Application) : AndroidViewModel(Appli
 
     fun fetchByKeyword(term: String, succListener:Response.Listener<JSONObject> = successListener, errListener:Response.ErrorListener = errorListener) {
         if (term!="") {
-            var term = term.substring(0, 1).toUpperCase() + term.substring(1)
+            var term = term.trim();
+            term = term.substring(0, 1).toUpperCase() + term.substring(1)
             val url = "${base}keyword/${term}"
             val request = object : JsonObjectRequest(url, null, succListener, errListener) {
 
@@ -85,7 +85,7 @@ class QuoteViewModel(@NonNull application: Application) : AndroidViewModel(Appli
 
     fun fetchByAuthor(author: String, succListener:Response.Listener<JSONObject> = successListener, errListener:Response.ErrorListener = errorListener) {
         if (author != "") {
-            var term = author.split(" ")
+            var term = author.trim().split(" ")
             term = term.map { it.substring(0, 1).toUpperCase() + it.substring(1) }
             var result = term.joinToString(separator = "%20")
             val request = object : JsonObjectRequest(

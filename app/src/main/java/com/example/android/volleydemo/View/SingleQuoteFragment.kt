@@ -1,21 +1,20 @@
-package com.example.android.volleydemo
+package com.example.android.volleydemo.View
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AlphaAnimation
 import android.widget.ImageButton
 import androidx.databinding.DataBindingUtil
-import com.example.android.volleydemo.View.MainActivity
+import com.example.android.volleydemo.model.Quote
+import com.example.android.volleydemo.R
 import com.example.android.volleydemo.databinding.QuoteItemBinding
-import java.util.zip.Inflater
 
 /**
  * A simple [Fragment] subclass.
  */
-class SingleQuoteFragment(var quote:Quote?=null) : Fragment() {
+class SingleQuoteFragment(var quote: Quote?=null) : Fragment() {
     var databinder: QuoteItemBinding? = null
     lateinit var saveButton:ImageButton
 
@@ -24,7 +23,8 @@ class SingleQuoteFragment(var quote:Quote?=null) : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        databinder = DataBindingUtil.inflate(inflater,R.layout.quote_item, container, false)
+        databinder = DataBindingUtil.inflate(inflater,
+            R.layout.quote_item, container, false)
         val rootView= databinder?.root
         databinder?.saved = false
         saveButton = rootView!!.findViewById(R.id.saveBtn)
@@ -43,7 +43,7 @@ class SingleQuoteFragment(var quote:Quote?=null) : Fragment() {
         return rootView
     }
 
-    fun setBinding(quote:Quote?){
+    fun setBinding(quote: Quote?){
         databinder?.quote = quote
         if (quote!=null){
             //animation happens here

@@ -5,17 +5,12 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.os.Looper
-import android.os.ResultReceiver
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.work.CoroutineWorker
-import androidx.work.Data
 import androidx.work.WorkerParameters
-import androidx.work.workDataOf
 import com.android.volley.Response
-import com.example.android.volleydemo.Constants
-import com.example.android.volleydemo.Quote
+import com.example.android.volleydemo.model.Quote
 import com.example.android.volleydemo.R
 import com.example.android.volleydemo.View.MainActivity
 import org.json.JSONObject
@@ -35,13 +30,17 @@ class AlertWorker(appContext: Context, val workerParams: WorkerParameters)
         val successListener = Response.Listener<JSONObject>{ quote->
             val intent = Intent(applicationContext, MainActivity::class.java)
             intent.setFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT or Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY)
-            intent.putExtra("notification_quote", Quote(quote.optString("message"),
-                quote.optString("author"),
-                quote.optString("keywords"),
-                quote.optString("profession"),
-                quote.optString("nationality"),
-                quote.optString("authorBirth"),
-                quote.optString("authorDeath")))
+            intent.putExtra("notification_quote",
+                Quote(
+                    quote.optString("message"),
+                    quote.optString("author"),
+                    quote.optString("keywords"),
+                    quote.optString("profession"),
+                    quote.optString("nationality"),
+                    quote.optString("authorBirth"),
+                    quote.optString("authorDeath")
+                )
+            )
             val pending = PendingIntent.getActivity(applicationContext, requestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT)
             val notificationBuilder= NotificationCompat.Builder(applicationContext, "QUOTES_CHANNEL")
                 .setSmallIcon(R.drawable.ic_format_quote_black_24dp)

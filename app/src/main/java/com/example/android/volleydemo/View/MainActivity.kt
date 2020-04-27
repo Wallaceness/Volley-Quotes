@@ -13,15 +13,12 @@ import android.view.MenuItem
 import android.view.View
 import android.view.animation.AnimationUtils
 import androidx.appcompat.app.ActionBar
-import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ShareCompat
 import androidx.core.content.getSystemService
 import androidx.navigation.fragment.NavHostFragment
 import com.example.android.volleydemo.Constants
-import com.example.android.volleydemo.MainFragment
-import com.example.android.volleydemo.Quote
+import com.example.android.volleydemo.model.Quote
 import com.example.android.volleydemo.R
-import com.example.android.volleydemo.ViewModel.QuoteViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity(), MainFragment.OnFragmentInteractionListener {
@@ -100,6 +97,12 @@ class MainActivity : AppCompatActivity(), MainFragment.OnFragmentInteractionList
                 else-> 0
             })
             view?.startAnimation(animation)
+        }
+    }
+
+    fun showBottomNav(){
+        if (bottomView.visibility == View.GONE){
+            bottomView.visibility = View.VISIBLE
         }
     }
 }

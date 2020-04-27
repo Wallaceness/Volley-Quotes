@@ -1,15 +1,14 @@
-package com.example.android.volleydemo
+package com.example.android.volleydemo.model
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.example.android.volleydemo.ViewModel.QuotesDao
 import java.util.concurrent.Executors
 
 @Database(entities = [Quote::class], version = 1, exportSchema = false)
 abstract class SavedQuotesDB:RoomDatabase() {
-    abstract fun quoteDao():QuotesDao
+    abstract fun quoteDao(): QuotesDao
     //create an instance of QuotesDao interface
 
     //make a static instance of the database
@@ -19,7 +18,7 @@ abstract class SavedQuotesDB:RoomDatabase() {
         private val NumberOfThreads = 4
         val databaseWriteExecutor = Executors.newFixedThreadPool(NumberOfThreads)
 
-        fun getDB(context: Context):SavedQuotesDB?{
+        fun getDB(context: Context): SavedQuotesDB?{
             //create your database instance if it doesn't already exist
             if (INSTANCE == null){
                 INSTANCE = Room.databaseBuilder(context.applicationContext,

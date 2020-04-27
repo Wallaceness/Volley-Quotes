@@ -6,7 +6,7 @@
     <data>
         <variable
             name="quote"
-            type="com.example.android.volleydemo.Quote" />
+            type="com.example.android.volleydemo.model.Quote" />
         <variable name="saved"
             type="Boolean" />
         <import type="android.view.View" />

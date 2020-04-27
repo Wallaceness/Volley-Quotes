@@ -1,4 +1,4 @@
-package com.example.android.volleydemo
+package com.example.android.volleydemo.View
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import com.example.android.volleydemo.ViewModel.QuoteViewModel
+import com.example.android.volleydemo.R
 
 /**
  * A simple [Fragment] subclass.

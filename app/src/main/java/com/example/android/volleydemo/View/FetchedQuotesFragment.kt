@@ -1,4 +1,4 @@
-package com.example.android.volleydemo
+package com.example.android.volleydemo.View
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -10,7 +10,8 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.android.volleydemo.View.MainActivity
+import com.example.android.volleydemo.model.Quote
+import com.example.android.volleydemo.R
 import com.example.android.volleydemo.ViewModel.QuoteViewModel
 import org.json.JSONObject
 
@@ -22,7 +23,7 @@ class FetchedQuotesFragment(): Fragment() {
 
     lateinit var vm:QuoteViewModel
     lateinit var type:String
-    lateinit var parent:MainFragment
+    lateinit var parent: MainFragment
     lateinit var emptyView:TextView
     lateinit var adapter: FetchedQuotesAdapter
     var recycler:RecyclerView?=null
@@ -49,9 +50,14 @@ class FetchedQuotesFragment(): Fragment() {
                 parent.authorContainer.visibility = View.VISIBLE
             }
         }
-        adapter= FetchedQuotesAdapter(quotes, this)
+        adapter=
+            FetchedQuotesAdapter(
+                quotes,
+                this
+            )
         emptyView = rootView.findViewById(R.id.view_empty)
-        adapter.setOnBottomReachedListener(object: onBottomReachedListener{
+        adapter.setOnBottomReachedListener(object:
+            onBottomReachedListener {
             override fun onBottomReached(position: Int) {
                 if (type=="random"){
                     vm.fetchRandom()
@@ -128,7 +134,7 @@ class FetchedQuotesFragment(): Fragment() {
         }
     }
 
-    fun saveQuote(quote:Quote){
+    fun saveQuote(quote: Quote){
         vm.saveQuote(quote)
     }
 

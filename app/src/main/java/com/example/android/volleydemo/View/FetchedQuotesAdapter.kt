@@ -1,25 +1,24 @@
-package com.example.android.volleydemo
+package com.example.android.volleydemo.View
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AlphaAnimation
 import android.widget.ImageButton
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.example.android.volleydemo.View.MainActivity
+import com.example.android.volleydemo.model.Quote
+import com.example.android.volleydemo.R
 import com.example.android.volleydemo.databinding.QuoteItemBinding
 
-class FetchedQuotesAdapter(var fetchedQuotes:ArrayList<Quote>, var parent:FetchedQuotesFragment): RecyclerView.Adapter<FetchedQuotesAdapter.FetchedQuotesHolder>() {
+class FetchedQuotesAdapter(var fetchedQuotes:ArrayList<Quote>, var parent: FetchedQuotesFragment): RecyclerView.Adapter<FetchedQuotesAdapter.FetchedQuotesHolder>() {
 
-    private var onBottomReachedListener:onBottomReachedListener?=null
+    private var onBottomReachedListener: onBottomReachedListener?=null
 
     class FetchedQuotesHolder constructor(quoteBinding: QuoteItemBinding): RecyclerView.ViewHolder(quoteBinding.root) {
-        var quote:Quote?=null
+        var quote: Quote?=null
         var binder = quoteBinding
         lateinit var saveButton:ImageButton
 
-        fun bind(quote:Quote, parent:FetchedQuotesFragment) {
+        fun bind(quote: Quote, parent: FetchedQuotesFragment) {
             binder.quote= quote
             (parent.activity as MainActivity).animateQuote(binder.root)
             binder.executePendingBindings()
@@ -42,15 +41,18 @@ class FetchedQuotesAdapter(var fetchedQuotes:ArrayList<Quote>, var parent:Fetche
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FetchedQuotesHolder {
         var inflater: LayoutInflater = LayoutInflater.from(parent.context)
-        val holderBinding:QuoteItemBinding = DataBindingUtil.inflate(inflater, R.layout.quote_item, parent, false)
-        return FetchedQuotesHolder(holderBinding)
+        val holderBinding:QuoteItemBinding = DataBindingUtil.inflate(inflater,
+            R.layout.quote_item, parent, false)
+        return FetchedQuotesHolder(
+            holderBinding
+        )
     }
 
     override fun getItemCount(): Int {
         return fetchedQuotes.size
     }
 
-    fun addQuote(quote:Quote){
+    fun addQuote(quote: Quote){
         fetchedQuotes.add(quote)
         notifyItemInserted(fetchedQuotes.size-1)
     }
