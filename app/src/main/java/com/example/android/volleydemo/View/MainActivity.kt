@@ -86,7 +86,7 @@ class MainActivity : AppCompatActivity(), MainFragment.OnFragmentInteractionList
 
     fun animateQuote(view:View?){
         val animationType = sharedPreferences.getString("AnimationType", "")
-        if (animationType!="none"){
+        if (animationType!="none" && animationType!=""){
             val animation = AnimationUtils.loadAnimation(this, when(animationType){
                 "none"->R.id.noneOption
                 "fade"->R.anim.fadein
